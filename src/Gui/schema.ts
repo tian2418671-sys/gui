@@ -8,8 +8,9 @@ export const Schema = z.object({
     时辰: z.enum(['白天', '黄昏', '夜晚', '凌晨']).describe('白天必须躲藏，夜晚才能行动').prefault('夜晚'),
     当前幕: z.enum([
       '第一幕·觉醒', '第二幕·初次尝试', '第三幕·人间的另一个窗口',
-      '第四幕·削弱家族屏障', '第五幕·医院中的其他鬼', '第六幕·灭族', '第七幕·之后'
-    ]).describe('当前主线幕，驱动阶段指导与剧情进度EJS').prefault('第一幕·觉醒'),
+      '第四幕·削弱家族屏障', '第五幕·医院中的其他鬼', '第六幕·灭族', '第七幕·之后',
+      '沙盒模式·游历'
+    ]).describe('当前主线幕，复仇完成后进入沙盒模式自由游历').prefault('第一幕·觉醒'),
     当前剧情阶段: z.string().describe('当前剧情进展描述').or(z.literal('待初始化')).prefault('待初始化'),
   }).prefault({}),
 
@@ -18,7 +19,7 @@ export const Schema = z.object({
     是否记得自己: z.boolean().prefault(true),
     怨气: z.coerce.number().transform(v => _.clamp(v, 0, 100)).describe('核心力量，越恨越强，增长解锁能力、也侵蚀记忆').prefault(20),
     记忆: z.coerce.number().transform(v => _.clamp(v, 0, 100)).describe('生前记忆与人性，随怨气增长流失；归零则忘记自己是谁').prefault(90),
-    形态: z.string().describe('溺水形态：半透明、披头散发、浑身滴水').prefault('溺水形态：半透明，浑身滴水'),
+    形态: z.string().describe('撞死形态：半透明、身上带撞击伤、衣襟有血迹，永远维持死亡瞬间的样子').prefault('撞死形态：半透明，身上带撞击伤，衣襟有血迹'),
     隐匿度: z.coerce.number().transform(v => _.clamp(v, 0, 100)).describe('收敛怨气、压低存在感，越高越不易被察觉').prefault(30),
     伤势: z.string().describe('被法器/阳光/其他鬼所伤的状态').or(z.literal('无')).prefault('无'),
     香火: z.coerce.number().transform(v => _.clamp(v, 0, 9999)).describe('鬼的能量来源；无人祭祀时靠鬼市情报交换获取').prefault(0),
