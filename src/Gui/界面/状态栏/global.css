@@ -1,0 +1,169 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  /* 配色方案 - 溺死厉鬼 · 水底深黑 */
+  --c-abyss: #0d1417;   /* 水底深黑：背景 */
+  --c-water: #2e5f7a;   /* 溺水幽蓝：标题、边框 */
+  --c-flesh: #cfd8dc;   /* 亡魂苍白：主文字 */
+  --c-mist: #7a8b94;    /* 泡尸灰青：次级文字 */
+  --c-grime: #8e2a2a;   /* 怨气渗血：怨气条、警告 */
+  --c-phos: #4a7d6b;    /* 鬼火磷光：鬼界信息 */
+  --c-fade: #9aa5ad;    /* 记忆褪色：记忆条 */
+  --c-line: rgba(46, 95, 122, 0.28);
+
+  /* 字体 */
+  --font-tomb: 'KaiTi', 'STKaiti', 'SimSun', 'Microsoft YaHei', serif;
+}
+
+body {
+  font-family: var(--font-tomb);
+}
+
+/* ── 通用区块样式 ── */
+.ghost-sec {
+  border: 1px solid var(--c-line);
+  border-radius: 6px;
+  padding: 8px 10px;
+  margin-bottom: 8px;
+  background: rgba(13, 20, 23, 0.55);
+}
+
+.ghost-sec-head {
+  display: inline-block;
+  font-weight: bold;
+  font-size: 0.8rem;
+  letter-spacing: 0.35em;
+  color: var(--c-water);
+  border-bottom: 2px solid var(--c-phos);
+  margin-bottom: 6px;
+  padding-bottom: 2px;
+}
+
+.ghost-grid2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3px 14px;
+}
+
+.ghost-item {
+  display: flex;
+  gap: 6px;
+  padding: 2px 0;
+  align-items: baseline;
+}
+
+.ghost-item .lbl {
+  flex-shrink: 0;
+  color: var(--c-mist);
+  font-size: 0.76rem;
+  min-width: 3em;
+  letter-spacing: 0.1em;
+}
+
+.ghost-item .val {
+  font-size: 0.85rem;
+  word-break: break-all;
+}
+
+/* 家族名单（墓碑牌） */
+.ghost-clan {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 6px 0;
+}
+
+.clan-chip {
+  font-size: 0.75rem;
+  padding: 2px 8px;
+  border-radius: 4px;
+  border: 1px solid var(--c-line);
+  color: var(--c-flesh);
+  background: rgba(46, 95, 122, 0.1);
+  letter-spacing: 0.05em;
+}
+
+.clan-chip.dead {
+  color: var(--c-mist);
+  border-color: rgba(122, 139, 148, 0.25);
+  background: rgba(0, 0, 0, 0.3);
+  text-decoration: line-through;
+}
+
+.clan-chip.bad {
+  color: var(--c-grime);
+  border-color: rgba(142, 42, 42, 0.4);
+}
+
+/* 能力徽章 */
+.ghost-abilities {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.abil-chip {
+  font-size: 0.76rem;
+  padding: 2px 9px;
+  border-radius: 10px;
+  border: 1px solid var(--c-phos);
+  color: var(--c-phos);
+  background: rgba(74, 125, 107, 0.1);
+}
+
+.abil-chip.locked {
+  color: var(--c-mist);
+  border-color: rgba(122, 139, 148, 0.25);
+  background: transparent;
+}
+
+/* 威胁 */
+.ghost-threat {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.thr-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.78rem;
+}
+
+.thr-row .lbl {
+  flex-shrink: 0;
+  color: var(--c-mist);
+  font-size: 0.76rem;
+  min-width: 5.5em;
+  letter-spacing: 0.1em;
+}
+
+.thr-bar {
+  flex: 1;
+  height: 6px;
+  border-radius: 3px;
+  background: rgba(122, 139, 148, 0.18);
+  overflow: hidden;
+}
+
+.thr-bar i {
+  display: block;
+  height: 100%;
+  width: 0%;
+  background: var(--c-grime);
+  transition: width 0.6s ease;
+}
+
+.thr-bar i.t-phos {
+  background: var(--c-phos);
+}
+
+.thr-flag {
+  font-size: 0.78rem;
+  color: var(--c-phos);
+}

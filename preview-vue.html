@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>鬼 · 状态栏预览（Vue 版）</title>
+<style>
+  body { background: #0a0e10; padding: 24px; margin: 0; }
+  .tip { color: #556; font-size: 12px; margin: 0 auto 12px; max-width: 720px; font-family: sans-serif; }
+</style>
+<script src="https://testingcf.jsdelivr.net/npm/vue@3/dist/vue.global.prod.js"></script>
+<script src="https://testingcf.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+<script src="https://testingcf.jsdelivr.net/npm/lodash@4/lodash.min.js"></script>
+</head>
+<body>
+<p class="tip">Vue 版状态栏预览（mock 酒馆环境，模拟第三幕·人间的另一个窗口·夜晚数据）。点击标题栏可折叠/展开。</p>
+<div id="app"></div>
+
+<script>
+  // ── mock 酒馆助手环境 ──
+  window.getCurrentMessageId = function () { return 1; };
+  window.waitGlobalInitialized = function () { return Promise.resolve(); };
+  window.errorCatched = function (fn) { return fn; };
+  window.updateVariablesWith = function (fn, opt) {
+    const v = window.getVariables(opt);
+    fn(v);
+    return v;
+  };
+  window.getVariables = function () {
+    return { stat_data: {
+      世界: {
+        当前时间: '2024年3月·夜', 当前区域: '老宅外巷', 时辰: '夜晚',
+        当前幕: '第三幕·人间的另一个窗口', 当前剧情阶段: '通过假道士获取家族信息'
+      },
+      鬼魂: {
+        姓名: '<user>', 是否记得自己: true, 怨气: 35, 记忆: 75,
+        形态: '溺水形态：半透明，浑身滴水', 隐匿度: 55, 伤势: '无', 香火: 12, 住处: '废弃防空洞'
+      },
+      能力: {
+        灯灭镜裂: { 是否解锁: true, 等级: 2, 描述: '熄灯裂镜，制造异响' },
+        温度骤降: { 是否解锁: true, 等级: 1, 描述: '周围温度骤降' },
+        入梦: { 是否解锁: false, 等级: 1, 描述: '潜入梦境' },
+        感官篡改: { 是否解锁: false, 等级: 1, 描述: '干扰五感' }
+      },
+      复仇: {
+        当前目标: '离间供奉道士，打开祖坟阵法缺口',
+        家族成员: {
+          老家主: { 身份: '老家主', 状态: '活着', 死因: '' },
+          老板: { 身份: '老板', 状态: '活着', 死因: '' },
+          堂兄: { 身份: '堂兄', 状态: '活着', 死因: '' },
+          旁系二叔: { 身份: '旁系二叔', 状态: '活着', 死因: '' }
+        },
+        妻子: { 状态: '活着', 位置: '城中别墅' },
+        防护屏障: { 供奉道士: '被离间', 祖坟阵法: '出现缺口', 血脉气运: '完好' },
+        罪证: { 进度: 10, 见证者: '无' }
+      },
+      鬼界: { 地盘: '废弃商业楼外围', 鬼市关系: '可进入', 庇护: '假道士', 敌人: '无' },
+      威胁: { 阳光暴露: 0, 阴差注意: 15, 被捉鬼人盯上: false },
+      隐藏: { 人性残余: 80, 记忆碎片: '妻子脸、老宅、车牌号' }
+    }};
+  };
+</script>
+
+<script type="module">
+  // 注入全局 z（Zod v4，schema.ts 依赖）与 webpack cjs 运行时
+  import * as zod from 'https://testingcf.jsdelivr.net/npm/zod@4/+esm';
+  window.z = zod;
+  window.__webpack_require__ = {
+    cjs: (e) => { const t = { exports: {} }; e(t.exports, t.exports, t.exports); return t.exports; }
+  };
+
+  const resp = await fetch('/dist/Gui/界面/状态栏/index.html');
+  const html = await resp.text();
+  const doc = new DOMParser().parseFromString(html, 'text/html');
+  // 提取并注入 <style>（global.css + scoped 样式）
+  doc.querySelectorAll('style').forEach((el) => {
+    const s = document.createElement('style');
+    s.textContent = el.textContent;
+    document.head.appendChild(s);
+  });
+  // 提取并执行 <script type="module">
+  const moduleScript = doc.querySelector('script[type="module"]');
+  if (moduleScript) {
+    const s = document.createElement('script');
+    s.type = 'module';
+    s.textContent = moduleScript.textContent;
+    document.body.appendChild(s);
+  }
+</script>
+</body>
+</html>

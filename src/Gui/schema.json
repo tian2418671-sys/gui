@@ -1,0 +1,436 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "default": {},
+  "type": "object",
+  "properties": {
+    "世界": {
+      "default": {},
+      "type": "object",
+      "properties": {
+        "当前时间": {
+          "default": "待初始化",
+          "anyOf": [
+            {
+              "type": "string",
+              "description": "当前剧情时间，如 2024年3月·深夜"
+            },
+            {
+              "type": "string",
+              "const": "待初始化"
+            }
+          ]
+        },
+        "当前区域": {
+          "default": "待初始化",
+          "anyOf": [
+            {
+              "type": "string",
+              "description": "当前所在地：河边/家族老宅/家族私立医院/鬼市/废弃防空地道/高架桥下/城中别墅等"
+            },
+            {
+              "type": "string",
+              "const": "待初始化"
+            }
+          ]
+        },
+        "时辰": {
+          "default": "夜晚",
+          "type": "string",
+          "enum": [
+            "白天",
+            "黄昏",
+            "夜晚",
+            "凌晨"
+          ],
+          "description": "白天必须躲藏，夜晚才能行动"
+        },
+        "当前幕": {
+          "default": "第一幕·觉醒",
+          "type": "string",
+          "enum": [
+            "第一幕·觉醒",
+            "第二幕·初次尝试",
+            "第三幕·人间的另一个窗口",
+            "第四幕·削弱家族屏障",
+            "第五幕·医院中的其他鬼",
+            "第六幕·灭族",
+            "第七幕·之后"
+          ],
+          "description": "当前主线幕，驱动阶段指导与剧情进度EJS"
+        },
+        "当前剧情阶段": {
+          "default": "待初始化",
+          "anyOf": [
+            {
+              "type": "string",
+              "description": "当前剧情进展描述"
+            },
+            {
+              "type": "string",
+              "const": "待初始化"
+            }
+          ]
+        }
+      }
+    },
+    "鬼魂": {
+      "default": {},
+      "type": "object",
+      "properties": {
+        "姓名": {
+          "default": "待初始化",
+          "type": "string",
+          "description": "生前的名字；记忆归零或未定时显示为？？？"
+        },
+        "是否记得自己": {
+          "default": true,
+          "type": "boolean"
+        },
+        "怨气": {
+          "default": 20,
+          "description": "核心力量，越恨越强，增长解锁能力、也侵蚀记忆",
+          "$ref": "#/$defs/__schema0"
+        },
+        "记忆": {
+          "default": 90,
+          "description": "生前记忆与人性，随怨气增长流失；归零则忘记自己是谁",
+          "$ref": "#/$defs/__schema1"
+        },
+        "形态": {
+          "default": "溺水形态：半透明，浑身滴水",
+          "type": "string",
+          "description": "溺水形态：半透明、披头散发、浑身滴水"
+        },
+        "隐匿度": {
+          "default": 30,
+          "description": "收敛怨气、压低存在感，越高越不易被察觉",
+          "$ref": "#/$defs/__schema2"
+        },
+        "伤势": {
+          "default": "无",
+          "anyOf": [
+            {
+              "type": "string",
+              "description": "被法器/阳光/其他鬼所伤的状态"
+            },
+            {
+              "type": "string",
+              "const": "无"
+            }
+          ]
+        },
+        "香火": {
+          "default": 0,
+          "description": "鬼的能量来源；无人祭祀时靠鬼市情报交换获取",
+          "$ref": "#/$defs/__schema3"
+        },
+        "住处": {
+          "default": "待初始化",
+          "anyOf": [
+            {
+              "type": "string",
+              "description": "鬼的住处：防空洞/鬼市外围/医院旧楼"
+            },
+            {
+              "type": "string",
+              "const": "待初始化"
+            }
+          ]
+        }
+      }
+    },
+    "能力": {
+      "default": {},
+      "type": "object",
+      "propertyNames": {
+        "$ref": "#/$defs/__schema4"
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/__schema5"
+      },
+      "description": "随怨气阈值解锁：40入梦/60科技骚扰/80区域作祟"
+    },
+    "复仇": {
+      "default": {},
+      "type": "object",
+      "properties": {
+        "当前目标": {
+          "default": "待初始化",
+          "anyOf": [
+            {
+              "type": "string",
+              "description": "当前复仇目标"
+            },
+            {
+              "type": "string",
+              "const": "待初始化"
+            }
+          ]
+        },
+        "家族成员": {
+          "default": {},
+          "type": "object",
+          "propertyNames": {
+            "$ref": "#/$defs/__schema6"
+          },
+          "additionalProperties": {
+            "$ref": "#/$defs/__schema7"
+          },
+          "description": "灭族名单，随剧情增删"
+        },
+        "妻子": {
+          "default": {},
+          "type": "object",
+          "properties": {
+            "状态": {
+              "default": "活着",
+              "type": "string",
+              "enum": [
+                "活着",
+                "恐惧",
+                "疯狂",
+                "死亡"
+              ]
+            },
+            "位置": {
+              "default": "待初始化",
+              "type": "string"
+            }
+          }
+        },
+        "防护屏障": {
+          "default": {},
+          "type": "object",
+          "properties": {
+            "供奉道士": {
+              "default": "在场",
+              "type": "string",
+              "enum": [
+                "在场",
+                "被离间",
+                "已离开",
+                "无"
+              ]
+            },
+            "祖坟阵法": {
+              "default": "完好",
+              "type": "string",
+              "enum": [
+                "完好",
+                "出现缺口",
+                "已污染",
+                "崩毁"
+              ]
+            },
+            "血脉气运": {
+              "default": "完好",
+              "type": "string",
+              "enum": [
+                "完好",
+                "受损",
+                "断裂"
+              ]
+            }
+          }
+        },
+        "罪证": {
+          "default": {},
+          "type": "object",
+          "properties": {
+            "进度": {
+              "default": 0,
+              "description": "老宅密室罪证收集进度",
+              "$ref": "#/$defs/__schema8"
+            },
+            "见证者": {
+              "default": "无",
+              "anyOf": [
+                {
+                  "type": "string",
+                  "description": "女鬼要求留的活见证人"
+                },
+                {
+                  "type": "string",
+                  "const": "无"
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    "鬼界": {
+      "default": {},
+      "type": "object",
+      "properties": {
+        "地盘": {
+          "default": "待初始化",
+          "anyOf": [
+            {
+              "type": "string",
+              "description": "当前所在鬼的地盘"
+            },
+            {
+              "type": "string",
+              "const": "待初始化"
+            }
+          ]
+        },
+        "鬼市关系": {
+          "default": "未知",
+          "type": "string",
+          "enum": [
+            "未知",
+            "被驱逐",
+            "可进入",
+            "常客"
+          ]
+        },
+        "庇护": {
+          "default": "无",
+          "anyOf": [
+            {
+              "type": "string",
+              "description": "愿意帮主角的鬼/人"
+            },
+            {
+              "type": "string",
+              "const": "无"
+            }
+          ]
+        },
+        "敌人": {
+          "default": "无",
+          "anyOf": [
+            {
+              "type": "string",
+              "description": "鬼界敌人"
+            },
+            {
+              "type": "string",
+              "const": "无"
+            }
+          ]
+        }
+      }
+    },
+    "威胁": {
+      "default": {},
+      "type": "object",
+      "properties": {
+        "阳光暴露": {
+          "default": 0,
+          "description": "白天暴露在阳光下的危险度",
+          "$ref": "#/$defs/__schema9"
+        },
+        "阴差注意": {
+          "default": 0,
+          "description": "地府查访关注度，过高会被鬼差盯上",
+          "$ref": "#/$defs/__schema10"
+        },
+        "被捉鬼人盯上": {
+          "default": false,
+          "type": "boolean"
+        }
+      }
+    },
+    "隐藏": {
+      "default": {},
+      "type": "object",
+      "properties": {
+        "人性残余": {
+          "default": 100,
+          "description": "越来越不像人的程度；残余越低越接近恶鬼",
+          "$ref": "#/$defs/__schema11"
+        },
+        "记忆碎片": {
+          "default": "待初始化",
+          "anyOf": [
+            {
+              "type": "string",
+              "description": "还记得的生前碎片：妻子脸/住址/工作/名字"
+            },
+            {
+              "type": "string",
+              "const": "待初始化"
+            }
+          ]
+        }
+      }
+    }
+  },
+  "$defs": {
+    "__schema0": {
+      "type": "number"
+    },
+    "__schema1": {
+      "type": "number"
+    },
+    "__schema2": {
+      "type": "number"
+    },
+    "__schema3": {
+      "type": "number"
+    },
+    "__schema4": {
+      "type": "string"
+    },
+    "__schema5": {
+      "type": "object",
+      "properties": {
+        "是否解锁": {
+          "default": false,
+          "type": "boolean"
+        },
+        "等级": {
+          "default": 1,
+          "type": "number"
+        },
+        "描述": {
+          "default": "",
+          "type": "string"
+        }
+      }
+    },
+    "__schema6": {
+      "type": "string"
+    },
+    "__schema7": {
+      "type": "object",
+      "properties": {
+        "身份": {
+          "default": "",
+          "type": "string",
+          "description": "如 老家主/老板/堂兄/旁系"
+        },
+        "状态": {
+          "default": "活着",
+          "type": "string",
+          "enum": [
+            "活着",
+            "重伤",
+            "疯狂",
+            "死亡"
+          ]
+        },
+        "死因": {
+          "default": "",
+          "type": "string",
+          "description": "表面死因（心脏病/中风/自杀/车祸）"
+        }
+      }
+    },
+    "__schema8": {
+      "type": "number"
+    },
+    "__schema9": {
+      "type": "number"
+    },
+    "__schema10": {
+      "type": "number"
+    },
+    "__schema11": {
+      "type": "number"
+    }
+  }
+}
