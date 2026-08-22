@@ -1,5 +1,5 @@
 <template>
-  <div class="ghost-root" :class="{ open, drowned, daylight }">
+  <div class="ghost-root" :class="{ open, crash, daylight }">
     <div class="ghost-title" @click="open = !open">
       <span class="ghost-ic">◌</span>
       <span class="ghost-name">{{ displayName }}</span>
@@ -61,7 +61,7 @@ const timeIcon = computed(() => {
 });
 
 const daylight = computed(() => world.value['时辰'] === '白天');
-const drowned = computed(() => grudge.value >= 80 || memory.value <= 20);
+const crash = computed(() => grudge.value >= 80 || memory.value <= 20);
 </script>
 
 <style lang="scss" scoped>
@@ -76,7 +76,7 @@ const drowned = computed(() => grudge.value >= 80 || memory.value <= 20);
   color: var(--c-flesh);
   font-size: 13px;
   line-height: 1.45;
-  box-shadow: 0 2px 14px rgba(0, 0, 0, 0.55), inset 0 0 30px rgba(46, 95, 122, 0.07);
+  box-shadow: 0 2px 14px rgba(0, 0, 0, 0.55), inset 0 0 30px rgba(120, 130, 140, 0.08);
   position: relative;
   overflow: hidden;
 
@@ -87,8 +87,8 @@ const drowned = computed(() => grudge.value >= 80 || memory.value <= 20);
     pointer-events: none;
     opacity: 0.3;
     background-image:
-      radial-gradient(ellipse at 18% 8%, rgba(46, 95, 122, 0.22), transparent 45%),
-      radial-gradient(ellipse at 82% 92%, rgba(74, 125, 107, 0.13), transparent 40%),
+      radial-gradient(ellipse at 18% 8%, rgba(120, 130, 140, 0.22), transparent 45%),
+      radial-gradient(ellipse at 82% 92%, rgba(154, 125, 90, 0.12), transparent 40%),
       radial-gradient(ellipse at 55% 45%, rgba(142, 42, 42, 0.07), transparent 50%);
   }
 }
@@ -170,8 +170,8 @@ const drowned = computed(() => grudge.value >= 80 || memory.value <= 20);
   transform: rotate(180deg);
 }
 
-/* 情境覆盖：沉底（怨气≥80 或 记忆≤20） */
-.ghost-root.drowned {
+/* 情境覆盖：惨死态（怨气≥80 或 记忆≤20）——血色与碎裂的车祸感 */
+.ghost-root.crash {
   .ghost-title {
     background: rgba(142, 42, 42, 0.12);
   }
