@@ -209,4 +209,31 @@ const crash = computed(() => grudge.value >= 80 || memory.value <= 20);
     opacity: 1;
   }
 }
+
+/* 手机窄屏：标题栏允许换行，收窄间距与字号 */
+@media (max-width: 480px) {
+  .ghost-root {
+    font-size: 12.5px;
+  }
+  .ghost-title {
+    flex-wrap: wrap;
+    gap: 4px 8px;
+    padding: 7px 9px;
+  }
+  .ghost-name {
+    font-size: 1rem;
+    letter-spacing: 0.04em;
+  }
+  .ghost-core {
+    order: 9; /* 条形图整行铺底 */
+    flex-basis: 100%;
+    min-width: 0;
+  }
+  .ghost-chev {
+    margin-left: auto;
+  }
+  .ghost-body {
+    padding: 8px 9px;
+  }
+}
 </style>

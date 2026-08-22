@@ -167,3 +167,53 @@ body {
   font-size: 0.78rem;
   color: var(--c-phos);
 }
+
+/* ── 手机屏幕适配（窄屏） ── */
+@media (max-width: 480px) {
+  .ghost-sec {
+    padding: 7px 9px;
+    border-radius: 6px;
+  }
+  .ghost-sec-head {
+    font-size: 0.76rem;
+    letter-spacing: 0.28em;
+  }
+  /* 两栏变单栏，避免挤断 */
+  .ghost-grid2 {
+    grid-template-columns: 1fr;
+    gap: 2px 0;
+  }
+  .ghost-item .lbl {
+    font-size: 0.72rem;
+    min-width: 3em;
+  }
+  .ghost-item .val {
+    font-size: 0.82rem;
+  }
+  .ghost-clan {
+    gap: 4px;
+  }
+  .clan-chip {
+    font-size: 0.7rem;
+    padding: 2px 6px;
+  }
+  .ghost-abilities {
+    gap: 4px;
+  }
+  .abil-chip {
+    font-size: 0.72rem;
+    padding: 2px 7px;
+  }
+  .thr-row {
+    font-size: 0.74rem;
+    gap: 6px;
+  }
+  .thr-row .lbl {
+    font-size: 0.72rem;
+    min-width: 4em;
+    letter-spacing: 0.06em;
+  }
+  .thr-bar {
+    height: 5px;
+  }
+}
