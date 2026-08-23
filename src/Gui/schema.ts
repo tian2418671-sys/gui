@@ -4,13 +4,13 @@
 export const Schema = z.object({
   世界: z.object({
     当前时间: z.string().describe('当前剧情时间，如 2024年3月·深夜').or(z.literal('待初始化')).prefault('待初始化'),
-    当前区域: z.string().describe('当前所在地：河边/家族老宅/家族私立医院/鬼市/废弃防空地道/高架桥下/城中别墅等').or(z.literal('待初始化')).prefault('待初始化'),
+    当前区域: z.string().describe('当前所在地：出事路口/医院停尸房/普通小区的家/家族老宅/家族私立医院/鬼市/废弃防空地道/高架桥下/城中别墅/十字路口/城中村/土地龛等').or(z.literal('待初始化')).prefault('待初始化'),
     时辰: z.enum(['白天', '黄昏', '夜晚', '凌晨']).describe('白天必须躲藏，夜晚才能行动').prefault('夜晚'),
     当前幕: z.enum([
       '第一幕·觉醒', '第二幕·初次尝试', '第三幕·人间的另一个窗口',
       '第四幕·削弱家族屏障', '第五幕·医院中的其他鬼', '第六幕·灭族', '第七幕·之后',
       '沙盒模式·游历'
-    ]).describe('当前主线幕，复仇完成后进入沙盒模式自由游历').prefault('第一幕·觉醒'),
+    ]).describe('当前主线幕，主线任务了结后（无论以何种方式了结）进入沙盒模式自由游历').prefault('第一幕·觉醒'),
     当前剧情阶段: z.string().describe('当前剧情进展描述').or(z.literal('待初始化')).prefault('待初始化'),
     自动生成角色: z.enum(['开启', '关闭']).describe('实验功能开关：AI 生成新角色时是否套用「角色生成算法」预设模板，关闭则回到基础规则').prefault('开启'),
   }).prefault({}),
@@ -19,11 +19,12 @@ export const Schema = z.object({
     姓名: z.string().describe('生前的名字；记忆归零或未定时显示为？？？').prefault('待初始化'),
     是否记得自己: z.boolean().prefault(true),
     怨气: z.coerce.number().transform(v => _.clamp(v, 0, 100)).describe('核心力量，越恨越强，增长解锁能力、也侵蚀记忆').prefault(20),
-    记忆: z.coerce.number().transform(v => _.clamp(v, 0, 100)).describe('生前记忆与人性，随怨气增长流失；归零则忘记自己是谁').prefault(90),
+    记忆: z.coerce.number().transform(v => _.clamp(v, 0, 100)).describe('生前记忆与人性，随怨气增长流失（吞噬同类或接触执念物可稳住；进阶三阶后不再消散）；归零变成单纯的高浓度灵体、成为其他鬼的补品').prefault(90),
     形态: z.string().describe('撞死形态：半透明、身上带撞击伤、衣襟有血迹，永远维持死亡瞬间的样子').prefault('撞死形态：半透明，身上带撞击伤，衣襟有血迹'),
     隐匿度: z.coerce.number().transform(v => _.clamp(v, 0, 100)).describe('收敛怨气、压低存在感，越高越不易被察觉').prefault(30),
     伤势: z.string().describe('被法器/阳光/其他鬼所伤的状态').or(z.literal('无')).prefault('无'),
     香火: z.coerce.number().transform(v => _.clamp(v, 0, 9999)).describe('鬼的能量来源；无人祭祀时靠鬼市情报交换获取').prefault(0),
+    生煞: z.coerce.number().transform(v => _.clamp(v, 0, 9999)).describe('活人极致的恐惧，鬼市的硬通货，可用来交易或强行冲破法阵').prefault(0),
     住处: z.string().describe('鬼的住处：防空洞/鬼市外围/医院旧楼').or(z.literal('待初始化')).prefault('待初始化'),
     阶位: z.enum([
       '一阶·孤魂野鬼', '二阶·游魂阴鬼', '三阶·怨鬼', '四阶·厉鬼', '五阶·凶煞',
@@ -130,11 +131,10 @@ export const Schema = z.object({
 
   隐藏: z.object({
     人性残余: z.coerce.number().transform(v => _.clamp(v, 0, 100)).describe('越来越不像人的程度；残余越低越接近恶鬼').prefault(100),
-    记忆碎片: z.string().describe('还记得的生前碎片：妻子脸/住址/工作/名字').or(z.literal('待初始化')).prefault('待初始化'),
     锚物: z.record(z.string(), z.object({
-      锚定记忆: z.string().describe('该锚物锚定的具体记忆片段').prefault(''),
-      状态: z.enum(['完好', '磨损', '被夺', '被毁']).describe('完好→磨损（保护力下降）→被夺/被毁（记忆不可逆融化）').prefault('完好'),
-    })).describe('执念锚物：生前物件锚定记忆，触碰抗磨损（记忆扣减最多抵消一半）；被毁则对应记忆格不可逆融化').prefault({}),
+      锚定记忆: z.string().describe('该执念物锚定的具体记忆片段').prefault(''),
+      状态: z.enum(['完好', '磨损', '被夺', '被毁']).describe('完好→磨损（保护力下降）→被夺/被毁（魂底松动）').prefault('完好'),
+    })).describe('执念物：生前物件锚定记忆，接触/抱持时记忆不消散；被毁则魂底松动').prefault({}),
     已知: z.object({
       家族成员: z.array(z.string()).describe('已确认身份的神宗家族成员（存身份，如 老板/老家主/堂兄），剧情中认出后加入；未确认的成员状态栏不显示').prefault([]),
       屏障: z.boolean().describe('是否已探明家族防护屏障（供奉道士/祖坟阵法/血脉气运）；未探明时状态栏显示？？？').prefault(false),

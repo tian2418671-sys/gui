@@ -25,7 +25,7 @@
           "anyOf": [
             {
               "type": "string",
-              "description": "当前所在地：河边/家族老宅/家族私立医院/鬼市/废弃防空地道/高架桥下/城中别墅等"
+              "description": "当前所在地：出事路口/医院停尸房/普通小区的家/家族老宅/家族私立医院/鬼市/废弃防空地道/高架桥下/城中别墅/十字路口/城中村/土地龛等"
             },
             {
               "type": "string",
@@ -57,7 +57,7 @@
             "第七幕·之后",
             "沙盒模式·游历"
           ],
-          "description": "当前主线幕，复仇完成后进入沙盒模式自由游历"
+          "description": "当前主线幕，主线任务了结后（无论以何种方式了结）进入沙盒模式自由游历"
         },
         "当前剧情阶段": {
           "default": "待初始化",
@@ -103,7 +103,7 @@
         },
         "记忆": {
           "default": 90,
-          "description": "生前记忆与人性，随怨气增长流失；归零则忘记自己是谁",
+          "description": "生前记忆与人性，随怨气增长流失（吞噬同类或接触执念物可稳住；进阶三阶后不再消散）；归零变成单纯的高浓度灵体、成为其他鬼的补品",
           "$ref": "#/$defs/__schema1"
         },
         "形态": {
@@ -133,6 +133,11 @@
           "default": 0,
           "description": "鬼的能量来源；无人祭祀时靠鬼市情报交换获取",
           "$ref": "#/$defs/__schema3"
+        },
+        "生煞": {
+          "default": 0,
+          "description": "活人极致的恐惧，鬼市的硬通货，可用来交易或强行冲破法阵",
+          "$ref": "#/$defs/__schema4"
         },
         "住处": {
           "default": "待初始化",
@@ -168,16 +173,16 @@
           "type": "object",
           "properties": {
             "魂质与死相": {
-              "$ref": "#/$defs/__schema4"
+              "$ref": "#/$defs/__schema5"
             },
             "因果与煞气": {
-              "$ref": "#/$defs/__schema6"
+              "$ref": "#/$defs/__schema7"
             },
             "锚点与灵智": {
-              "$ref": "#/$defs/__schema8"
+              "$ref": "#/$defs/__schema9"
             },
             "法域与威慑": {
-              "$ref": "#/$defs/__schema10"
+              "$ref": "#/$defs/__schema11"
             }
           },
           "description": "鬼道修炼四维：晋升需四维同步成长，缺一不可；满 100 即达当前阶位晋升门槛"
@@ -187,10 +192,10 @@
           "type": "object",
           "properties": {
             "次数": {
-              "$ref": "#/$defs/__schema12"
+              "$ref": "#/$defs/__schema13"
             },
             "所得碎片": {
-              "$ref": "#/$defs/__schema14"
+              "$ref": "#/$defs/__schema15"
             }
           },
           "description": "噬魂融忆：吞噬同类亡魂固魂抗失忆 + 搜魂读忆"
@@ -202,13 +207,13 @@
       "type": "object",
       "properties": {
         "先天": {
-          "$ref": "#/$defs/__schema15"
+          "$ref": "#/$defs/__schema16"
         },
         "后天": {
-          "$ref": "#/$defs/__schema19"
+          "$ref": "#/$defs/__schema20"
         },
         "被动": {
-          "$ref": "#/$defs/__schema23"
+          "$ref": "#/$defs/__schema24"
         }
       },
       "description": "能力分三类：先天为鬼天生主动基础能力（需摸索掌握）、后天为修炼所学主动法门（动态习得）、被动为修为自然形成的现象（非能力，仅是否获得）"
@@ -234,10 +239,10 @@
           "default": {},
           "type": "object",
           "propertyNames": {
-            "$ref": "#/$defs/__schema26"
+            "$ref": "#/$defs/__schema27"
           },
           "additionalProperties": {
-            "$ref": "#/$defs/__schema27"
+            "$ref": "#/$defs/__schema28"
           },
           "description": "灭族名单，随剧情增删"
         },
@@ -306,7 +311,7 @@
             "进度": {
               "default": 0,
               "description": "老宅密室罪证收集进度",
-              "$ref": "#/$defs/__schema28"
+              "$ref": "#/$defs/__schema29"
             },
             "见证者": {
               "default": "无",
@@ -384,7 +389,7 @@
       "default": [],
       "type": "array",
       "items": {
-        "$ref": "#/$defs/__schema29"
+        "$ref": "#/$defs/__schema30"
       },
       "description": "当前场景在场的角色清单，随剧情进出增删"
     },
@@ -392,7 +397,7 @@
       "default": [],
       "type": "array",
       "items": {
-        "$ref": "#/$defs/__schema34"
+        "$ref": "#/$defs/__schema35"
       },
       "description": "随身物品/装备清单，随剧情获得、使用与消耗增删"
     },
@@ -400,7 +405,7 @@
       "default": [],
       "type": "array",
       "items": {
-        "$ref": "#/$defs/__schema35"
+        "$ref": "#/$defs/__schema36"
       },
       "description": "当前任务/目标清单，主线与支线并存；完成后更新状态"
     },
@@ -411,12 +416,12 @@
         "阳光暴露": {
           "default": 0,
           "description": "白天暴露在阳光下的危险度",
-          "$ref": "#/$defs/__schema36"
+          "$ref": "#/$defs/__schema37"
         },
         "阴差注意": {
           "default": 0,
           "description": "地府查访关注度，过高会被鬼差盯上",
-          "$ref": "#/$defs/__schema37"
+          "$ref": "#/$defs/__schema38"
         },
         "人间威胁": {
           "default": "无",
@@ -449,47 +454,34 @@
         "人性残余": {
           "default": 100,
           "description": "越来越不像人的程度；残余越低越接近恶鬼",
-          "$ref": "#/$defs/__schema38"
-        },
-        "记忆碎片": {
-          "default": "待初始化",
-          "anyOf": [
-            {
-              "type": "string",
-              "description": "还记得的生前碎片：妻子脸/住址/工作/名字"
-            },
-            {
-              "type": "string",
-              "const": "待初始化"
-            }
-          ]
+          "$ref": "#/$defs/__schema39"
         },
         "锚物": {
           "default": {},
           "type": "object",
           "propertyNames": {
-            "$ref": "#/$defs/__schema39"
-          },
-          "additionalProperties": {
             "$ref": "#/$defs/__schema40"
           },
-          "description": "执念锚物：生前物件锚定记忆，触碰抗磨损（记忆扣减最多抵消一半）；被毁则对应记忆格不可逆融化"
+          "additionalProperties": {
+            "$ref": "#/$defs/__schema41"
+          },
+          "description": "执念物：生前物件锚定记忆，接触/抱持时记忆不消散；被毁则魂底松动"
         },
         "已知": {
           "default": {},
           "type": "object",
           "properties": {
             "家族成员": {
-              "$ref": "#/$defs/__schema41"
+              "$ref": "#/$defs/__schema42"
             },
             "屏障": {
-              "$ref": "#/$defs/__schema43"
-            },
-            "罪证": {
               "$ref": "#/$defs/__schema44"
             },
-            "捉鬼人": {
+            "罪证": {
               "$ref": "#/$defs/__schema45"
+            },
+            "捉鬼人": {
+              "$ref": "#/$defs/__schema46"
             }
           },
           "description": "状态栏信息迷雾：记录玩家已确认的信息，未确认的不在状态栏暴露"
@@ -511,65 +503,68 @@
       "type": "number"
     },
     "__schema4": {
-      "default": 10,
-      "description": "维度一·自身凝实度与死相炼化",
-      "$ref": "#/$defs/__schema5"
+      "type": "number"
     },
     "__schema5": {
-      "type": "number"
+      "default": 10,
+      "description": "维度一·自身凝实度与死相炼化",
+      "$ref": "#/$defs/__schema6"
     },
     "__schema6": {
-      "default": 10,
-      "description": "维度二·情绪驱动力与外部能量摄取转化",
-      "$ref": "#/$defs/__schema7"
+      "type": "number"
     },
     "__schema7": {
-      "type": "number"
+      "default": 10,
+      "description": "维度二·情绪驱动力与外部能量摄取转化",
+      "$ref": "#/$defs/__schema8"
     },
     "__schema8": {
-      "default": 10,
-      "description": "维度三·对抗失真遗忘的自保机制",
-      "$ref": "#/$defs/__schema9"
+      "type": "number"
     },
     "__schema9": {
-      "type": "number"
+      "default": 10,
+      "description": "维度三·对抗失真遗忘的自保机制",
+      "$ref": "#/$defs/__schema10"
     },
     "__schema10": {
-      "default": 5,
-      "description": "维度四·对所在环境与阴阳秩序的影响力",
-      "$ref": "#/$defs/__schema11"
+      "type": "number"
     },
     "__schema11": {
-      "type": "number"
+      "default": 5,
+      "description": "维度四·对所在环境与阴阳秩序的影响力",
+      "$ref": "#/$defs/__schema12"
     },
     "__schema12": {
-      "default": 0,
-      "description": "吞噬同类亡魂的次数；每施展一次噬魂融忆+1，越多魂相越浊、阴差注意越高",
-      "$ref": "#/$defs/__schema13"
-    },
-    "__schema13": {
       "type": "number"
     },
+    "__schema13": {
+      "default": 0,
+      "description": "吞噬同类亡魂的次数；每施展一次噬魂融忆+1，越多魂相越浊、阴差注意越高",
+      "$ref": "#/$defs/__schema14"
+    },
     "__schema14": {
+      "type": "number"
+    },
+    "__schema15": {
       "default": "",
       "type": "string",
       "description": "噬魂融忆获得的他人记忆碎片（格式：来源——情报内容），多条用；分隔；可推动剧情的新线索"
     },
-    "__schema15": {
+    "__schema16": {
       "default": {},
       "type": "object",
       "propertyNames": {
-        "$ref": "#/$defs/__schema16"
+        "$ref": "#/$defs/__schema17"
       },
       "additionalProperties": {
-        "$ref": "#/$defs/__schema17"
+        "$ref": "#/$defs/__schema18"
       },
       "description": "先天能力：鬼天生会的基础主动能力（灯灭镜裂/温度骤降/入梦/附身等），虽是本能也需在剧情中摸索、失控或尝试时觉醒掌握，初始皆未解锁；怨气阈值（40入梦/60科技骚扰/80区域作祟）仅为可感知的门槛"
     },
-    "__schema16": {
+    "__schema17": {
       "type": "string"
     },
-    "__schema17": {
+    "__schema18": {
       "type": "object",
       "properties": {
         "是否解锁": {
@@ -583,7 +578,7 @@
         "熟练度": {
           "default": 0,
           "description": "修炼进度：使用/积累提升，满 100 时等级+1 并清零",
-          "$ref": "#/$defs/__schema18"
+          "$ref": "#/$defs/__schema19"
         },
         "描述": {
           "default": "",
@@ -591,24 +586,24 @@
         }
       }
     },
-    "__schema18": {
+    "__schema19": {
       "type": "number"
     },
-    "__schema19": {
+    "__schema20": {
       "default": {},
       "type": "object",
       "propertyNames": {
-        "$ref": "#/$defs/__schema20"
+        "$ref": "#/$defs/__schema21"
       },
       "additionalProperties": {
-        "$ref": "#/$defs/__schema21"
+        "$ref": "#/$defs/__schema22"
       },
       "description": "后天能力：修炼道路上动态习得的主动法门，由「后天法门目录」生成算法按阶位引入，须满足修行门槛方可解锁"
     },
-    "__schema20": {
+    "__schema21": {
       "type": "string"
     },
-    "__schema21": {
+    "__schema22": {
       "type": "object",
       "properties": {
         "是否解锁": {
@@ -622,7 +617,7 @@
         "熟练度": {
           "default": 0,
           "description": "修炼进度：使用/积累提升，满 100 时等级+1 并清零",
-          "$ref": "#/$defs/__schema22"
+          "$ref": "#/$defs/__schema23"
         },
         "描述": {
           "default": "",
@@ -630,24 +625,24 @@
         }
       }
     },
-    "__schema22": {
+    "__schema23": {
       "type": "number"
     },
-    "__schema23": {
+    "__schema24": {
       "default": {},
       "type": "object",
       "propertyNames": {
-        "$ref": "#/$defs/__schema24"
+        "$ref": "#/$defs/__schema25"
       },
       "additionalProperties": {
-        "$ref": "#/$defs/__schema25"
+        "$ref": "#/$defs/__schema26"
       },
       "description": "被动现象：修为自然形成的状态，不是主动能力、只是一个现象的名字（如噬魂拼骨/惊煞采气/地煞生根/披人借阳/锚物凝魂），无等级无熟练度，达成门槛后显现"
     },
-    "__schema24": {
+    "__schema25": {
       "type": "string"
     },
-    "__schema25": {
+    "__schema26": {
       "type": "object",
       "properties": {
         "是否获得": {
@@ -660,10 +655,10 @@
         }
       }
     },
-    "__schema26": {
+    "__schema27": {
       "type": "string"
     },
-    "__schema27": {
+    "__schema28": {
       "type": "object",
       "properties": {
         "身份": {
@@ -691,10 +686,10 @@
         }
       }
     },
-    "__schema28": {
+    "__schema29": {
       "type": "number"
     },
-    "__schema29": {
+    "__schema30": {
       "type": "object",
       "properties": {
         "姓名": {
@@ -726,16 +721,16 @@
           "type": "object",
           "properties": {
             "饰品": {
-              "$ref": "#/$defs/__schema30"
-            },
-            "穿戴": {
               "$ref": "#/$defs/__schema31"
             },
-            "衣服": {
+            "穿戴": {
               "$ref": "#/$defs/__schema32"
             },
-            "内衣": {
+            "衣服": {
               "$ref": "#/$defs/__schema33"
+            },
+            "内衣": {
+              "$ref": "#/$defs/__schema34"
             }
           },
           "description": "展开后展示的详细穿着，含饰品/穿戴/衣服/内衣内裤"
@@ -752,27 +747,27 @@
         }
       }
     },
-    "__schema30": {
+    "__schema31": {
       "default": "",
       "type": "string",
       "description": "首饰配件，如 玉镯/金链/银簪/耳坠"
     },
-    "__schema31": {
+    "__schema32": {
       "default": "",
       "type": "string",
       "description": "鞋帽/随身物，如 皮鞋/皮包/围巾/手表"
     },
-    "__schema32": {
+    "__schema33": {
       "default": "",
       "type": "string",
       "description": "外衣/上衣下装，如 深灰大衣内搭白衬衫"
     },
-    "__schema33": {
+    "__schema34": {
       "default": "",
       "type": "string",
       "description": "内衣内裤，如 素色贴身内衣"
     },
-    "__schema34": {
+    "__schema35": {
       "type": "object",
       "properties": {
         "名称": {
@@ -821,7 +816,7 @@
         }
       }
     },
-    "__schema35": {
+    "__schema36": {
       "type": "object",
       "properties": {
         "名称": {
@@ -862,9 +857,6 @@
         }
       }
     },
-    "__schema36": {
-      "type": "number"
-    },
     "__schema37": {
       "type": "number"
     },
@@ -872,15 +864,18 @@
       "type": "number"
     },
     "__schema39": {
-      "type": "string"
+      "type": "number"
     },
     "__schema40": {
+      "type": "string"
+    },
+    "__schema41": {
       "type": "object",
       "properties": {
         "锚定记忆": {
           "default": "",
           "type": "string",
-          "description": "该锚物锚定的具体记忆片段"
+          "description": "该执念物锚定的具体记忆片段"
         },
         "状态": {
           "default": "完好",
@@ -891,32 +886,32 @@
             "被夺",
             "被毁"
           ],
-          "description": "完好→磨损（保护力下降）→被夺/被毁（记忆不可逆融化）"
+          "description": "完好→磨损（保护力下降）→被夺/被毁（魂底松动）"
         }
       }
     },
-    "__schema41": {
+    "__schema42": {
       "default": [],
       "type": "array",
       "items": {
-        "$ref": "#/$defs/__schema42"
+        "$ref": "#/$defs/__schema43"
       },
       "description": "已确认身份的神宗家族成员（存身份，如 老板/老家主/堂兄），剧情中认出后加入；未确认的成员状态栏不显示"
     },
-    "__schema42": {
-      "type": "string"
-    },
     "__schema43": {
-      "default": false,
-      "type": "boolean",
-      "description": "是否已探明家族防护屏障（供奉道士/祖坟阵法/血脉气运）；未探明时状态栏显示？？？"
+      "type": "string"
     },
     "__schema44": {
       "default": false,
       "type": "boolean",
-      "description": "是否已发现老宅密室罪证线索；未发现时状态栏显示？？？"
+      "description": "是否已探明家族防护屏障（供奉道士/祖坟阵法/血脉气运）；未探明时状态栏显示？？？"
     },
     "__schema45": {
+      "default": false,
+      "type": "boolean",
+      "description": "是否已发现老宅密室罪证线索；未发现时状态栏显示？？？"
+    },
+    "__schema46": {
       "default": false,
       "type": "boolean",
       "description": "是否察觉有捉鬼人盯上；未察觉时状态栏显示？"

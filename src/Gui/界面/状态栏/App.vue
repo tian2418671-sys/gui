@@ -5,6 +5,7 @@
       <span class="ghost-name">{{ displayName }}</span>
       <span v-if="rankLabel" class="ghost-rank" :title="rankFull">{{ rankLabel }}</span>
       <span class="ghost-time" :title="currentTime">{{ timeIcon }}<template v-if="timeText"> {{ timeText }}</template></span>
+      <span class="ghost-chev">▾</span>
       <span class="ghost-core">
         <span class="ghost-gauge g-grime" :class="{ flash: grudgeFlash }" title="怨气：复仇与恨意化为的力量，越强解锁越多先天能力，也越侵蚀记忆">
           <span class="g-label">怨气</span>
@@ -19,7 +20,6 @@
           <span class="g-delta" :class="{ up: memoryDelta > 0 }" v-if="memoryDelta">{{ memoryDelta > 0 ? '+' + memoryDelta : memoryDelta }}</span>
         </span>
       </span>
-      <span class="ghost-chev">▾</span>
     </div>
 
     <div class="ghost-body">
@@ -192,6 +192,7 @@ const rankLabel = computed(() => rankFull.value);
 
 .ghost-title {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 10px;
   padding: 8px 12px;
@@ -218,7 +219,7 @@ const rankLabel = computed(() => rankFull.value);
 }
 
 .ghost-core {
-  flex: 1;
+  flex: 1 1 100%;
   display: flex;
   flex-direction: column;
   gap: 3px;
@@ -304,6 +305,7 @@ const rankLabel = computed(() => rankFull.value);
 }
 
 .ghost-chev {
+  margin-left: auto;
   color: var(--c-mist);
   font-size: 0.75rem;
   transition: transform 0.3s ease;
