@@ -207,6 +207,31 @@ body {
   transition: width 0.6s ease;
 }
 
+/* 鬼气 / 死相 / 煞气的折叠说明 */
+.cult-hint {
+  margin: 4px 0 8px;
+  padding: 6px 9px;
+  border-left: 2px solid var(--c-phos);
+  background: rgba(122, 139, 148, 0.08);
+  border-radius: 4px;
+  font-size: 0.7rem;
+  color: var(--c-flesh);
+  line-height: 1.65;
+}
+
+.cult-hint-line {
+  margin-bottom: 3px;
+}
+
+.cult-hint-line:last-child {
+  margin-bottom: 0;
+}
+
+.cult-hint b {
+  color: var(--c-phos);
+  font-weight: bold;
+}
+
 .cult-abilities {
   display: flex;
   flex-wrap: wrap;

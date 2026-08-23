@@ -12,14 +12,34 @@
     </div>
     <div class="cult-progress-note">死相与煞气 · 两者齐满 100 方可晋升</div>
 
-    <!-- 修炼两维：死相（魂质凝实/死相炼化）+ 煞气（情绪驱动/能量摄取） -->
+    <!-- 鬼气：当前境界 + 折叠展开的解释说明 -->
+    <div class="cult-dim">
+      <div class="cult-dim-head" style="cursor: pointer" @click="qiOpen = !qiOpen">
+        <span class="cult-dim-name">鬼气</span>
+        <span class="cult-dim-val">{{ qiState }}</span>
+        <span class="onsite-chev" :class="{ open: qiOpen }">▸</span>
+      </div>
+      <div v-if="qiOpen" class="cult-hint">
+        <div class="cult-hint-line"><b>是什么</b>：鬼魂自身凝练的阴属能量，是能力、阶位与被动现象的根源；越厚越纯，魂体越凝实、干涉阳间越强。</div>
+        <div class="cult-hint-line"><b>怎么来</b>：怨气（复仇恨意）、香火与饭气、吞噬残魂、占地聚阴、惊煞采气（活人恐惧）。</div>
+        <div class="cult-hint-line"><b>当前境界</b>：{{ rank }} · {{ qiState }}——{{ qiDesc }}</div>
+        <div class="cult-hint-line"><b>怎么升</b>：死相与煞气齐满 100 晋升下一阶，鬼气随之由「稀薄散乱 → 凝实如衣 → 外放成势 → 返璞归真」演进。</div>
+      </div>
+    </div>
+
+    <!-- 修炼两维：死相（魂质凝实/死相炼化）+ 煞气（情绪驱动/能量摄取），各自带「如何获得」折叠说明 -->
     <div v-for="d in dimensions" :key="d.name" class="cult-dim">
-      <div class="cult-dim-head">
+      <div class="cult-dim-head" style="cursor: pointer" @click="toggleDim(d.name)">
         <span class="cult-dim-name">{{ d.name }}</span>
         <span class="cult-dim-val">{{ d.value }}%</span>
+        <span class="onsite-chev" :class="{ open: dimOpen[d.name] }">▸</span>
       </div>
       <div class="cult-dim-bar" :title="d.hint">
         <i :style="{ width: d.value + '%' }"></i>
+      </div>
+      <div v-if="dimOpen[d.name]" class="cult-hint">
+        <div class="cult-hint-line"><b>如何获得</b>：{{ d.how }}</div>
+        <div class="cult-hint-line" style="color: var(--c-mist)">{{ d.hint }}</div>
       </div>
     </div>
 
@@ -73,10 +93,18 @@ import { useDataStore } from '../store';
 const store = useDataStore();
 const ghost = computed(() => store.data.鬼魂);
 
-// 能力区块折叠状态（默认收起，修炼栏主体只保留「死相/煞气」两维，避免繁琐）
+// 能力区块折叠状态（默认收起，修炼栏主体只保留「鬼气/死相/煞气」，避免繁琐）
 const innateOpen = ref(false);
 const learnedOpen = ref(false);
 const passiveOpen = ref(false);
+
+// 鬼气说明折叠
+const qiOpen = ref(false);
+// 死相/煞气各自的「如何获得」折叠
+const dimOpen = ref<Record<string, boolean>>({});
+function toggleDim(name: string) {
+  dimOpen.value = { ...dimOpen.value, [name]: !dimOpen.value[name] };
+}
 
 const rank = computed(() => ghost.value['阶位'] || '一阶·孤魂野鬼');
 
@@ -91,10 +119,40 @@ const nextRank = computed(() => {
 });
 
 // 修炼两维：死相（魂质与死相）+ 煞气（因果与煞气）；锚点与灵智、法域与威慑不再在状态栏展示
-const DIMS: { name: string; key: string; hint: string }[] = [
-  { name: '死相', key: '魂质与死相', hint: '自身质量的凝实程度，对死亡本相的掌握与炼化' },
-  { name: '煞气', key: '因果与煞气', hint: '情绪驱动力与外部能量（饭气/香火/残魂/生煞）的摄取转化' },
+const DIMS: { name: string; key: string; hint: string; how: string }[] = [
+  { name: '死相', key: '魂质与死相', hint: '自身质量的凝实程度，对死亡本相的掌握与炼化', how: '吞噬残魂、炼化死相、魂体凝实时提升' },
+  { name: '煞气', key: '因果与煞气', hint: '情绪驱动力与外部能量（饭气/香火/残魂/生煞）的摄取转化', how: '怨气增长、吸食香火饭气、提炼生煞时提升' },
 ];
+
+// 鬼气境界：按当前阶位映射（与「鬼气与修炼阶级」条目的演进一致）
+const QI_STAGES = [
+  { min: 1, state: '稀薄散乱', desc: '魂体虚浮、干涉阳间有限；遇见懂行的人要敛气藏形、避其锋芒' },
+  { min: 3, state: '凝实如衣', desc: '鬼气凝实，普通人不敢招惹，但真传法师与定力深者仍要提防' },
+  { min: 5, state: '外放成势', desc: '一方恶鬼名号渐响，阴差开始留意；人间威胁只剩极少数真修' },
+  { min: 7, state: '返璞归真', desc: '明面上几乎无人能撼动，传说级修行者仍是最深的忌讳' },
+];
+
+const RANK_NUM: Record<string, number> = {
+  '一阶·孤魂野鬼': 1, '二阶·游魂阴鬼': 2, '三阶·怨鬼': 3, '四阶·厉鬼': 4,
+  '五阶·凶煞': 5, '六阶·夜叉': 6, '七阶·鬼将': 7, '八阶·鬼王': 8, '九阶·鬼仙': 9,
+};
+
+const qiState = computed(() => {
+  const n = RANK_NUM[rank.value] ?? 1;
+  let cur = QI_STAGES[0];
+  for (const s of QI_STAGES) {
+    if (n >= s.min) cur = s;
+  }
+  return cur.state;
+});
+const qiDesc = computed(() => {
+  const n = RANK_NUM[rank.value] ?? 1;
+  let cur = QI_STAGES[0];
+  for (const s of QI_STAGES) {
+    if (n >= s.min) cur = s;
+  }
+  return cur.desc;
+});
 
 const dimensions = computed(() => {
   const cult = ghost.value['修炼'] || {};
