@@ -282,6 +282,25 @@ body {
   margin-top: 3px;
 }
 
+/* 丢弃/放弃按钮（物品非重要、任务非主线时显示） */
+.item-discard {
+  flex-shrink: 0;
+  border: none;
+  background: transparent;
+  color: var(--c-mist);
+  font-size: 0.72rem;
+  line-height: 1;
+  padding: 0 3px;
+  cursor: pointer;
+  opacity: 0.65;
+  transition: all 0.15s ease;
+}
+
+.item-discard:hover {
+  color: var(--c-grime);
+  opacity: 1;
+}
+
 .ghost-item.done .item-name {
   color: var(--c-mist);
   text-decoration: line-through;

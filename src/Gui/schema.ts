@@ -110,6 +110,7 @@ export const Schema = z.object({
     描述: z.string().describe('外观与当前状态').prefault(''),
     用途: z.string().describe('怎么用、用来干什么').prefault(''),
     状态: z.enum(['完好', '磨损', '被夺', '被毁', '已用']).describe('物品状态：完好→磨损→被夺/被毁/已用').prefault('完好'),
+    重要: z.boolean().describe('重要物品（执念锚物/关键道具）不可丢弃，前端不显示删除按钮').prefault(false),
   })).describe('随身物品/装备清单，随剧情获得、使用与消耗增删').prefault([]),
 
   任务: z.array(z.object({
