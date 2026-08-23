@@ -69,6 +69,14 @@ body {
   word-break: break-all;
 }
 
+/* 跨整行的条目（如锚物列表） */
+.ghost-item-wide {
+  grid-column: 1 / -1;
+  margin-top: 2px;
+  border-top: 1px dashed var(--c-line);
+  padding-top: 4px;
+}
+
 /* 家族名单（墓碑牌） */
 .ghost-clan {
   display: flex;
@@ -99,26 +107,170 @@ body {
   border-color: rgba(142, 42, 42, 0.4);
 }
 
-/* 能力徽章 */
+/* 能力徽章 → 能力列表（含修炼进度条） */
 .ghost-abilities {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: 6px;
 }
 
-.abil-chip {
-  font-size: 0.76rem;
-  padding: 2px 9px;
-  border-radius: 10px;
-  border: 1px solid var(--c-phos);
-  color: var(--c-phos);
-  background: rgba(74, 125, 107, 0.1);
+/* ── 修炼页 ── */
+.cult-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 4px;
 }
 
-.abil-chip.locked {
+.cult-row .lbl {
+  flex-shrink: 0;
+  color: var(--c-mist);
+  font-size: 0.76rem;
+  min-width: 3em;
+  letter-spacing: 0.1em;
+}
+
+.cult-rank {
+  font-size: 0.95rem;
+  font-weight: bold;
+  color: var(--c-phos);
+  letter-spacing: 0.06em;
+}
+
+.cult-next {
+  font-size: 0.72rem;
+  color: var(--c-water);
+}
+
+.cult-progress {
+  height: 8px;
+  border-radius: 4px;
+  background: rgba(122, 139, 148, 0.18);
+  overflow: hidden;
+  border: 1px solid rgba(122, 139, 148, 0.22);
+}
+
+.cult-progress i {
+  display: block;
+  height: 100%;
+  border-radius: 4px;
+  background: linear-gradient(90deg, #5a1b1b, var(--c-grime), var(--c-phos));
+  transition: width 0.6s ease;
+}
+
+.cult-progress-note {
+  font-size: 0.66rem;
+  color: var(--c-mist);
+  margin-top: 2px;
+  margin-bottom: 8px;
+  letter-spacing: 0.05em;
+}
+
+.cult-dim {
+  margin-bottom: 7px;
+}
+
+.cult-dim:last-of-type {
+  margin-bottom: 4px;
+}
+
+.cult-dim-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2px;
+}
+
+.cult-dim-name {
+  font-size: 0.76rem;
+  color: var(--c-flesh);
+  letter-spacing: 0.1em;
+}
+
+.cult-dim-val {
+  font-size: 0.72rem;
+  color: var(--c-water);
+}
+
+.cult-dim-bar {
+  height: 5px;
+  border-radius: 3px;
+  background: rgba(122, 139, 148, 0.18);
+  overflow: hidden;
+}
+
+.cult-dim-bar i {
+  display: block;
+  height: 100%;
+  border-radius: 3px;
+  background: linear-gradient(90deg, var(--c-phos), #c9a227);
+  transition: width 0.6s ease;
+}
+
+.cult-abilities {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.cult-abil {
+  font-size: 0.72rem;
+  padding: 1px 7px;
+  border-radius: 4px;
+  border: 1px solid var(--c-phos);
+  color: var(--c-phos);
+  background: rgba(74, 125, 107, 0.08);
+  cursor: help;
+}
+
+.cult-abil.locked {
   color: var(--c-mist);
   border-color: rgba(122, 139, 148, 0.25);
   background: transparent;
+  font-style: italic;
+}
+
+/* 被动现象：修为自然形成的状态，非主动能力——虚线框区分 */
+.cult-abil.passive {
+  color: var(--c-water);
+  border: 1px dashed rgba(122, 139, 148, 0.45);
+  background: rgba(13, 20, 23, 0.35);
+  font-style: italic;
+  letter-spacing: 0.05em;
+}
+
+/* 锚物标签（可悬停查看锚定记忆） */
+.anchor-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.anchor-tag {
+  font-size: 0.76rem;
+  padding: 1px 7px;
+  border-radius: 4px;
+  border: 1px solid var(--c-phos);
+  color: var(--c-phos);
+  background: rgba(74, 125, 107, 0.08);
+  cursor: help;
+}
+
+.anchor-tag.bad {
+  color: var(--c-grime);
+  border-color: var(--c-grime);
+}
+
+/* 状态页内的子区块（鬼界） */
+.ghost-sec-inner {
+  margin-top: 8px;
+  border-top: 1px dashed var(--c-line);
+  padding-top: 6px;
+}
+
+.ghost-sec-inner .ghost-sec-head {
+  font-size: 0.76rem;
+  margin-bottom: 4px;
 }
 
 /* 威胁 */
@@ -168,6 +320,149 @@ body {
   color: var(--c-phos);
 }
 
+.thr-flag.mid {
+  color: #c9a227;
+}
+
+.thr-flag.warn {
+  color: #d0762a;
+}
+
+.thr-flag.sev {
+  color: var(--c-grime);
+  text-shadow: 0 0 6px rgba(142, 42, 42, 0.6);
+  font-weight: bold;
+}
+
+.thr-num {
+  font-size: 0.72rem;
+  color: var(--c-mist);
+  min-width: 2.4em;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+/* 在场角色卡片 */
+.onsite-card {
+  border: 1px solid var(--c-line);
+  border-radius: 6px;
+  padding: 6px 9px;
+  margin-bottom: 6px;
+  background: rgba(46, 95, 122, 0.06);
+}
+
+.onsite-card:last-child {
+  margin-bottom: 0;
+}
+
+.onsite-card.dead {
+  opacity: 0.55;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.onsite-card.bad {
+  border-color: var(--c-grime);
+}
+
+.onsite-card.away {
+  opacity: 0.7;
+}
+
+.onsite-head {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.onsite-chev {
+  font-size: 0.68rem;
+  color: var(--c-mist);
+  transition: transform 0.15s ease;
+  flex-shrink: 0;
+  width: 0.8em;
+  display: inline-block;
+}
+
+.onsite-chev.open {
+  transform: rotate(90deg);
+  color: var(--c-phos);
+}
+
+.onsite-name {
+  font-size: 0.9rem;
+  font-weight: bold;
+  color: var(--c-flesh);
+  letter-spacing: 0.06em;
+}
+
+.onsite-card.dead .onsite-name {
+  color: var(--c-mist);
+  text-decoration: line-through;
+}
+
+.onsite-role {
+  font-size: 0.72rem;
+  color: var(--c-phos);
+}
+
+.onsite-state {
+  margin-left: auto;
+  font-size: 0.68rem;
+  color: var(--c-water);
+  flex-shrink: 0;
+}
+
+.onsite-card.dead .onsite-state {
+  color: var(--c-grime);
+}
+
+.onsite-detail {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.onsite-tag {
+  font-size: 0.7rem;
+  padding: 1px 6px;
+  border-radius: 4px;
+  border: 1px solid var(--c-line);
+  color: var(--c-mist);
+  background: rgba(13, 20, 23, 0.4);
+}
+
+/* 穿着详情（展开区） */
+.onsite-outfit {
+  margin-top: 5px;
+  padding-top: 5px;
+  border-top: 1px dashed var(--c-line);
+  display: grid;
+  gap: 3px;
+}
+
+.outfit-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 0.72rem;
+  line-height: 1.5;
+}
+
+.outfit-lbl {
+  flex-shrink: 0;
+  width: 3em;
+  color: var(--c-phos);
+  opacity: 0.9;
+}
+
+.outfit-val {
+  color: var(--c-flesh);
+  opacity: 0.92;
+}
+
 /* ── 手机屏幕适配（窄屏） ── */
 @media (max-width: 480px) {
   .ghost-sec {
@@ -177,6 +472,38 @@ body {
   .ghost-sec-head {
     font-size: 0.76rem;
     letter-spacing: 0.28em;
+  }
+  /* 标题栏紧凑：名字截断、徽章缩小、双条收窄 */
+  .ghost-title {
+    gap: 6px;
+    padding: 6px 9px;
+  }
+  .ghost-ic {
+    font-size: 0.9rem;
+  }
+  .ghost-name {
+    font-size: 1rem;
+    max-width: 132px;
+  }
+  .ghost-rank {
+    font-size: 0.64rem;
+    padding: 0 5px;
+  }
+  .ghost-time {
+    font-size: 0.85rem;
+  }
+  .ghost-core {
+    min-width: 88px;
+  }
+  .ghost-gauge {
+    height: 12px;
+  }
+  .g-label {
+    font-size: 0.58rem;
+    width: 1.8em;
+  }
+  .g-track {
+    height: 6px;
   }
   /* 两栏变单栏，避免挤断 */
   .ghost-grid2 {
@@ -200,9 +527,25 @@ body {
   .ghost-abilities {
     gap: 4px;
   }
-  .abil-chip {
+  .cult-rank {
+    font-size: 0.88rem;
+  }
+  .cult-dim-name {
     font-size: 0.72rem;
-    padding: 2px 7px;
+  }
+  .cult-abil {
+    font-size: 0.68rem;
+    padding: 1px 5px;
+  }
+  .onsite-card {
+    padding: 5px 7px;
+  }
+  .onsite-name {
+    font-size: 0.84rem;
+  }
+  .onsite-tag {
+    font-size: 0.66rem;
+    padding: 1px 5px;
   }
   .thr-row {
     font-size: 0.74rem;
@@ -215,5 +558,47 @@ body {
   }
   .thr-bar {
     height: 5px;
+  }
+}
+
+/* 超窄屏（小屏手机） */
+@media (max-width: 360px) {
+  .ghost-title {
+    gap: 5px;
+    padding: 5px 7px;
+  }
+  .ghost-name {
+    font-size: 0.95rem;
+    max-width: 104px;
+  }
+  .ghost-rank {
+    font-size: 0.6rem;
+    padding: 0 4px;
+  }
+  .ghost-time {
+    font-size: 0.8rem;
+  }
+  .ghost-core {
+    min-width: 72px;
+  }
+  .ghost-gauge {
+    height: 11px;
+  }
+  .g-label {
+    font-size: 0.55rem;
+    width: 1.6em;
+  }
+  .g-track {
+    height: 5px;
+  }
+  .ghost-body {
+    padding: 7px 8px;
+  }
+  .ghost-sec {
+    padding: 6px 7px;
+    margin-bottom: 6px;
+  }
+  .ghost-item-wide {
+    padding-top: 3px;
   }
 }

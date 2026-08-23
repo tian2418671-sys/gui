@@ -19,9 +19,17 @@ export function defineMvuDataStore<T extends z.ZodObject>(
       .map(entry => entry[1])
       .join('.')}`,
     errorCatched(() => {
-      const data = ref(
-        schema.parse(_.get(getVariables(variable_option), 'stat_data', {}), { reportInput: true }),
-      ) as Ref<z.infer<T>>;
+      // 防御：stat_data 可能被 {{user}} 宏/异常数据污染（如 YAML 把 {{user}} 解析成对象），
+      // 直接 parse 会抛 ZodError 导致整个状态栏空白。先安全解析，失败则回退到纯默认值。
+      const raw_stat_data = _.get(getVariables(variable_option), 'stat_data', {});
+      let initial: z.infer<T>;
+      try {
+        initial = schema.parse(raw_stat_data, { reportInput: true });
+      } catch {
+        console.warn('[MvuDataStore] stat_data 解析失败，已回退到默认值（原数据可能被 {{user}} 宏污染）');
+        initial = schema.parse({}, { reportInput: true });
+      }
+      const data = ref(initial) as Ref<z.infer<T>>;
       if (additional_setup) {
         additional_setup(data);
       }

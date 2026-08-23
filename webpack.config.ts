@@ -555,6 +555,14 @@ function parse_configuration(entry: Entry): (_env: any, argv: any) => webpack.Co
         yaml: 'YAML',
         zod: 'z',
       };
+      // 手机端 CDN 不可达兜底：这些包强制内联进 bundle，
+      // 避免运行时从 jsdelivr 拉取（测试/镜像不稳时会导致状态栏白屏/不显示）
+      if (
+        ['pinia', 'async-wait-until', 'birpc', 'hookable', 'perfect-debounce'].includes(request) ||
+        request.startsWith('@vueuse/')
+      ) {
+        return callback();
+      }
       if (request in global) {
         return callback(null, 'var ' + global[request as keyof typeof global]);
       }

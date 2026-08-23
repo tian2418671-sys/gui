@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>状态栏预览帧</title>
+<script src="https://testingcf.jsdelivr.net/npm/vue@3/dist/vue.global.prod.js"></script>
+<script src="https://testingcf.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+<script src="https://testingcf.jsdelivr.net/npm/lodash@4/lodash.min.js"></script>
+<style>
+  html, body { margin: 0; padding: 8px; background: #0a0e10; }
+  #app { max-width: 720px; }
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<script>
+  // ── mock 酒馆助手环境：变量统一从父窗口的 __STAT_DATA__ 读取/写入 ──
+  window.getCurrentMessageId = function () { return 1; };
+  window.waitGlobalInitialized = function () { return Promise.resolve(); };
+  window.errorCatched = function (fn) { return fn; };
+  window.updateVariablesWith = function (fn, opt) {
+    const v = window.getVariables(opt);
+    fn(v);
+    const p = window.parent;
+    if (p && p.__STAT_DATA__ && p.__STAT_DATA__ !== v.stat_data) {
+      p.__STAT_DATA__ = v.stat_data;
+      p.dispatchEvent(new CustomEvent('stat-data-changed'));
+    }
+    return v;
+  };
+  window.getVariables = function () {
+    const p = window.parent;
+    const stat = (p && p.__STAT_DATA__) || {};
+    return { stat_data: stat };
+  };
+</script>
+
+<script type="module">
+  // 注入全局 z（Zod v4，schema.ts 依赖）与 webpack cjs 运行时
+  import * as zod from 'https://testingcf.jsdelivr.net/npm/zod@4/+esm';
+  window.z = zod;
+  window.__webpack_require__ = {
+    cjs: (e) => { const t = { exports: {} }; e(t.exports, t.exports, t.exports); return t.exports; }
+  };
+
+  const resp = await fetch('dist/Gui/界面/状态栏/index.html');
+  const html = await resp.text();
+  const doc = new DOMParser().parseFromString(html, 'text/html');
+  // 提取并注入 <style>（global.css + scoped 样式）
+  doc.querySelectorAll('style').forEach((el) => {
+    const s = document.createElement('style');
+    s.textContent = el.textContent;
+    document.head.appendChild(s);
+  });
+  // 提取并执行 <script type="module">
+  const moduleScript = doc.querySelector('script[type="module"]');
+  if (moduleScript) {
+    const s = document.createElement('script');
+    s.type = 'module';
+    s.textContent = moduleScript.textContent;
+    document.body.appendChild(s);
+  }
+</script>
+</body>
+</html>
