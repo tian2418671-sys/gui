@@ -33,7 +33,10 @@
   window.getVariables = function () {
     const p = window.parent;
     const stat = (p && p.__STAT_DATA__) || {};
-    return { stat_data: stat };
+    // 深拷贝模拟 MVU「整体替换」语义：真实酒馆里 MagVarUpdate 每次更新
+    // stat_data 都会替换为新对象（引用变化），store 的引用缓存据此判断"数据已变化"；
+    // 若不拷贝（同引用），表单原地修改将无法被轮询感知。
+    return { stat_data: JSON.parse(JSON.stringify(stat)) };
   };
 </script>
 
