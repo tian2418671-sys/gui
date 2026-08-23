@@ -65,11 +65,11 @@ export const Schema = z.object({
     当前目标: z.string().describe('当前复仇目标').or(z.literal('待初始化')).prefault('待初始化'),
     家族成员: z.record(z.string(), z.object({
       身份: z.string().describe('如 老家主/老板/堂兄/旁系').prefault(''),
-      状态: z.enum(['活着', '疑神疑鬼', '神经衰弱', '濒临失控', '疯狂', '死亡']).describe('心理状态逐级下坠：活着→疑神疑鬼→神经衰弱→濒临失控→疯狂→死亡，不得越级').prefault('活着'),
+      状态: z.string().describe('心理状态逐级下坠：活着→疑神疑鬼→神经衰弱→濒临失控→疯狂→死亡，不得越级').prefault('活着'),
       死因: z.string().describe('表面死因（心脏病/中风/自杀/车祸）').prefault(''),
     })).describe('灭族名单，随剧情增删').prefault({}),
     妻子: z.object({
-      状态: z.enum(['活着', '疑神疑鬼', '恐惧', '神经衰弱', '濒临失控', '疯狂']).describe('孙紫心理状态逐级下坠，不得越级').prefault('活着'),
+      状态: z.string().describe('孙紫心理状态逐级下坠：活着→疑神疑鬼→恐惧→神经衰弱→濒临失控→疯狂，不得越级').prefault('活着'),
       位置: z.string().prefault('待初始化'),
     }).prefault({}),
     防护屏障: z.object({
@@ -93,7 +93,7 @@ export const Schema = z.object({
   在场角色: z.array(z.object({
     姓名: z.string().describe('角色姓名/称呼，如 孙紫/浅野千代/老刑警').prefault(''),
     性别: z.enum(['男', '女', '未知']).prefault('未知'),
-    年龄: z.string().describe('年龄或年龄段，如 三十出头/花甲之年').prefault(''),
+    年龄: z.coerce.string().describe('年龄或年龄段，如 三十出头/花甲之年（也可写数字）').prefault(''),
     穿着: z.string().describe('当前穿着特征概要，如 深灰大衣/素色旗袍').prefault(''),
     穿着详情: z.object({
       饰品: z.string().describe('首饰配件，如 玉镯/金链/银簪/耳坠').prefault(''),
