@@ -10,9 +10,9 @@
     <div class="cult-progress" :title="promoteHint">
       <i :style="{ width: minDim + '%' }"></i>
     </div>
-    <div class="cult-progress-note">四维修炼度 · 全部满 100 方可晋升</div>
+    <div class="cult-progress-note">死相与煞气 · 两者齐满 100 方可晋升</div>
 
-    <!-- 四维修炼度 -->
+    <!-- 修炼两维：死相（魂质凝实/死相炼化）+ 煞气（情绪驱动/能量摄取） -->
     <div v-for="d in dimensions" :key="d.name" class="cult-dim">
       <div class="cult-dim-head">
         <span class="cult-dim-name">{{ d.name }}</span>
@@ -73,10 +73,10 @@ import { useDataStore } from '../store';
 const store = useDataStore();
 const ghost = computed(() => store.data.鬼魂);
 
-// 能力区块折叠状态（默认展开）
-const innateOpen = ref(true);
-const learnedOpen = ref(true);
-const passiveOpen = ref(true);
+// 能力区块折叠状态（默认收起，修炼栏主体只保留「死相/煞气」两维，避免繁琐）
+const innateOpen = ref(false);
+const learnedOpen = ref(false);
+const passiveOpen = ref(false);
 
 const rank = computed(() => ghost.value['阶位'] || '一阶·孤魂野鬼');
 
@@ -90,12 +90,10 @@ const nextRank = computed(() => {
   return `→ ${RANKS[idx + 1]}`;
 });
 
-// 四维修炼度
+// 修炼两维：死相（魂质与死相）+ 煞气（因果与煞气）；锚点与灵智、法域与威慑不再在状态栏展示
 const DIMS: { name: string; key: string; hint: string }[] = [
-  { name: '魂质与死相', key: '魂质与死相', hint: '自身质量的凝实程度，对死亡本相的掌握与炼化' },
-  { name: '因果与煞气', key: '因果与煞气', hint: '情绪驱动力与外部能量（饭气/香火/残魂/生煞）的摄取转化' },
-  { name: '锚点与灵智', key: '锚点与灵智', hint: '对抗失真与遗忘的自保机制，靠执念锚点稳住自我' },
-  { name: '法域与威慑', key: '法域与威慑', hint: '对所在环境与阴阳秩序的影响力，从容身到改变一方生态' },
+  { name: '死相', key: '魂质与死相', hint: '自身质量的凝实程度，对死亡本相的掌握与炼化' },
+  { name: '煞气', key: '因果与煞气', hint: '情绪驱动力与外部能量（饭气/香火/残魂/生煞）的摄取转化' },
 ];
 
 const dimensions = computed(() => {
@@ -113,7 +111,7 @@ const minDim = computed(() => {
 });
 const promoteHint = computed(() => {
   const weakest = dimensions.value.reduce((a, b) => (a.value <= b.value ? a : b));
-  return `晋升需四维同步成长，当前最低「${weakest.name}」${weakest.value}%`;
+  return `晋升需死相与煞气齐满，当前最低「${weakest.name}」${weakest.value}%`;
 });
 
 // 能力清单：先天（鬼天生会的基础主动能力）+ 后天（修炼所学主动法门），完全动态读取变量「能力」record 的 key

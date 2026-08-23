@@ -12,6 +12,7 @@ export const Schema = z.object({
       '沙盒模式·游历'
     ]).describe('当前主线幕，复仇完成后进入沙盒模式自由游历').prefault('第一幕·觉醒'),
     当前剧情阶段: z.string().describe('当前剧情进展描述').or(z.literal('待初始化')).prefault('待初始化'),
+    自动生成角色: z.enum(['开启', '关闭']).describe('实验功能开关：AI 生成新角色时是否套用「角色生成算法」预设模板，关闭则回到基础规则').prefault('开启'),
   }).prefault({}),
 
   鬼魂: z.object({

@@ -22,11 +22,12 @@
   window.updateVariablesWith = function (fn, opt) {
     const v = window.getVariables(opt);
     fn(v);
-    const p = window.parent;
-    if (p && p.__STAT_DATA__ && p.__STAT_DATA__ !== v.stat_data) {
-      p.__STAT_DATA__ = v.stat_data;
-      p.dispatchEvent(new CustomEvent('stat-data-changed'));
-    }
+    // ⚠️ 编辑器模式：绝不把解析结果整体写回 parent.__STAT_DATA__。
+    // 原因：preview 的 store 轮询（mvu.ts）每次 safeParse 都会产生"新引用"对象，
+    // 只要检测到任何值变化就会 updateVariablesWith，若整体替换父对象，
+    // 编辑器表单绑定在旧对象上就会与数据源脱钩 → 表单编辑全部失效（历史根因）。
+    // 编辑器数据流是单向的「表单 → __STAT_DATA__ → 预览轮询读取」，预览侧无需写回。
+    // 若未来状态栏 UI 需要写数据，请改为按字段合并（_.merge）而非整体替换。
     return v;
   };
   window.getVariables = function () {

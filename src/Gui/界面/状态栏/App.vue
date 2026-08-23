@@ -6,13 +6,17 @@
       <span v-if="rankLabel" class="ghost-rank" :title="rankFull">{{ rankLabel }}</span>
       <span class="ghost-time" :title="currentTime">{{ timeIcon }}<template v-if="timeText"> {{ timeText }}</template></span>
       <span class="ghost-core">
-        <span class="ghost-gauge g-grime" title="怨气：复仇与恨意化为的力量，越强解锁越多先天能力，也越侵蚀记忆">
+        <span class="ghost-gauge g-grime" :class="{ flash: grudgeFlash }" title="怨气：复仇与恨意化为的力量，越强解锁越多先天能力，也越侵蚀记忆">
           <span class="g-label">怨气</span>
           <span class="g-track"><i :style="{ width: grudge + '%' }"></i></span>
+          <span class="g-val">{{ grudge }}%</span>
+          <span class="g-delta" :class="{ up: grudgeDelta > 0 }" v-if="grudgeDelta">{{ grudgeDelta > 0 ? '+' + grudgeDelta : grudgeDelta }}</span>
         </span>
-        <span class="ghost-gauge g-fade" title="记忆：生前的记忆与人性，随怨气增长流失，归零则忘记自己是谁">
+        <span class="ghost-gauge g-fade" :class="{ flash: memoryFlash }" title="记忆：生前的记忆与人性，随怨气增长流失，归零则忘记自己是谁">
           <span class="g-label">记忆</span>
           <span class="g-track"><i :style="{ width: memory + '%' }"></i></span>
+          <span class="g-val">{{ memory }}%</span>
+          <span class="g-delta" :class="{ up: memoryDelta > 0 }" v-if="memoryDelta">{{ memoryDelta > 0 ? '+' + memoryDelta : memoryDelta }}</span>
         </span>
       </span>
       <span class="ghost-chev">▾</span>
@@ -40,7 +44,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useDataStore } from './store';
 import StatusSection from './components/StatusSection.vue';
 import VengeanceSection from './components/VengeanceSection.vue';
@@ -66,6 +70,37 @@ const world = computed(() => store.data.世界);
 
 const grudge = computed(() => Math.max(0, Math.min(100, Number(ghost.value['怨气'] ?? 0))));
 const memory = computed(() => Math.max(0, Math.min(100, Number(ghost.value['记忆'] ?? 0))));
+
+// ── 怨气/记忆变化反馈：数值增减时短暂显示 +X/-X 徽章并让进度条闪烁 ──
+const grudgeDelta = ref(0);
+const memoryDelta = ref(0);
+const grudgeFlash = ref(false);
+const memoryFlash = ref(false);
+let grudgeTimer: ReturnType<typeof setTimeout> | undefined;
+let memoryTimer: ReturnType<typeof setTimeout> | undefined;
+
+watch(grudge, (nv, ov) => {
+  if (typeof ov === 'number' && nv !== ov) {
+    grudgeDelta.value = Math.round(nv - ov);
+    grudgeFlash.value = true;
+    clearTimeout(grudgeTimer);
+    grudgeTimer = setTimeout(() => {
+      grudgeDelta.value = 0;
+      grudgeFlash.value = false;
+    }, 2600);
+  }
+});
+watch(memory, (nv, ov) => {
+  if (typeof ov === 'number' && nv !== ov) {
+    memoryDelta.value = Math.round(nv - ov);
+    memoryFlash.value = true;
+    clearTimeout(memoryTimer);
+    memoryTimer = setTimeout(() => {
+      memoryDelta.value = 0;
+      memoryFlash.value = false;
+    }, 2600);
+  }
+});
 
 const displayName = computed(() => {
   const name = ghost.value['姓名'] || '';
@@ -204,6 +239,43 @@ const rankLabel = computed(() => rankFull.value);
     border-radius: 3px;
     transition: width 0.6s ease;
   }
+}
+
+/* 数值与增减反馈 */
+.g-val {
+  flex-shrink: 0;
+  font-size: 0.6rem;
+  color: var(--c-mist);
+  width: 2.6em;
+  text-align: left;
+  line-height: 1;
+}
+
+.g-delta {
+  flex-shrink: 0;
+  font-size: 0.68rem;
+  font-weight: bold;
+  color: var(--c-grime);
+  animation: gDeltaFade 2.6s ease forwards;
+}
+
+.g-delta.up {
+  color: var(--c-phos);
+}
+
+.ghost-gauge.flash i {
+  animation: gFlash 0.65s ease 3;
+}
+
+@keyframes gFlash {
+  0%, 100% { filter: brightness(1); }
+  50% { filter: brightness(1.85); }
+}
+
+@keyframes gDeltaFade {
+  0% { opacity: 1; transform: translateY(-1px); }
+  70% { opacity: 1; }
+  100% { opacity: 0; transform: translateY(-9px); }
 }
 
 .g-grime i {

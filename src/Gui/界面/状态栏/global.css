@@ -505,6 +505,13 @@ body {
   .g-track {
     height: 6px;
   }
+  .g-val {
+    font-size: 0.52rem;
+    width: 2.1em;
+  }
+  .g-delta {
+    font-size: 0.58rem;
+  }
   /* 两栏变单栏，避免挤断 */
   .ghost-grid2 {
     grid-template-columns: 1fr;
@@ -590,6 +597,13 @@ body {
   }
   .g-track {
     height: 5px;
+  }
+  .g-val {
+    font-size: 0.5rem;
+    width: 1.9em;
+  }
+  .g-delta {
+    font-size: 0.56rem;
   }
   .ghost-body {
     padding: 7px 8px;
