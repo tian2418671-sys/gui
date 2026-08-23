@@ -288,5 +288,6 @@ export function reloadOnChatChange(): EventOnReturn {
 - **dist 必须带补丁**：build 后跑 `_patch-dist.py` 补 `var __webpack_require__={}`，CDN 版加载的是 GitHub 上的 dist。
 - **正则文件是片段格式**：`<head>...</head><body>...</body>`，无 doctype/html 包装；首尾各一行纯三反引号。
 - **改 settings.json 必须停酒馆**：酒馆运行时会写回内存 settings 覆盖外部修改。
-- 标准链路：`pnpm build` → `_patch-dist.py` → `_check-entity-collisions.py` → `_inline-statusbar2.py` → 停酒馆改 settings → 重启 → 浏览器实测。
+- **CDN 版卡发布后必须 purge**：push 到 GitHub 后 jsdelivr 对 `@main` 分支缓存旧 bundle（可能旧到没有最新功能），`?v=` 参数不绕过。用 `curl "https://purge.jsdelivr.net/gh/tian2418671-sys/gui@main/dist/Gui/界面/状态栏/index.html"`，返回 `status: finished` 即成功。详见踩坑记录 P2。
+- 标准链路：`pnpm build` → `_patch-dist.py` → `_check-entity-collisions.py` → `_inline-statusbar2.py` → 停酒馆改 settings → 重启 → 浏览器实测；涉及 CDN 卡时加 `git push` + **jsdelivr purge**。
 
