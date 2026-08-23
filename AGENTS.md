@@ -278,3 +278,15 @@ export function reloadOnChatChange(): EventOnReturn {
   });
 }
 ```
+
+## 状态栏踩坑记录（必读）
+
+涉及状态栏（`src/Gui/界面/状态栏/`）的构建、内联、打包、酒馆部署前，**必须先读 `状态栏踩坑记录.md`**。核心铁律摘要：
+
+- **Terser 保留字**：`webpack.config.ts` 的 `mangle.reserved` 必须保留全部无分号 HTML 实体名（`lt`、`gt`、`amp`、`nbsp` 等），否则压缩标识符 `&&lt(` 会被酒馆的 HTML 解析解码成 `&<(`，模块脚本语法错误 → 状态栏空白（2026-08-23 的最终根因）。
+- **构建必须 production**：`pnpm watch` 的 dev 产物（2.5MB 未压缩）会覆盖 dist 并卡死酒馆导入。
+- **dist 必须带补丁**：build 后跑 `_patch-dist.py` 补 `var __webpack_require__={}`，CDN 版加载的是 GitHub 上的 dist。
+- **正则文件是片段格式**：`<head>...</head><body>...</body>`，无 doctype/html 包装；首尾各一行纯三反引号。
+- **改 settings.json 必须停酒馆**：酒馆运行时会写回内存 settings 覆盖外部修改。
+- 标准链路：`pnpm build` → `_patch-dist.py` → `_check-entity-collisions.py` → `_inline-statusbar2.py` → 停酒馆改 settings → 重启 → 浏览器实测。
+
