@@ -168,6 +168,12 @@ const DEFAULT_STAT = {
   },
   鬼界: { 地盘: '无', 鬼市关系: '未知', 庇护: '无', 敌人: '无' },
   在场角色: [],
+  物品: [
+    { 名称: '带血的旧钥匙串', 类型: '特殊', 描述: '出事路口捡回的旧钥匙串，钥匙柄上沾着干涸的血', 用途: '执念锚物，锚定「回家的路与门牌号」的记忆；可开老宅/旧居的门', 状态: '完好' },
+  ],
+  任务: [
+    { 名称: '查明被杀真相', 类型: '主线', 描述: '弄清自己是怎么死的、被谁害的', 进度: '刚在出事路口恢复意识，线索寥寥', 状态: '进行中' },
+  ],
   威胁: { 阳光暴露: 0, 阴差注意: 0, 人间威胁: '无', 鬼界敌意: '无' },
   隐藏: {
     人性残余: 100,
@@ -207,6 +213,10 @@ const THREAT_HUMAN = ['无','散修','魔修','正道道士'];
 const THREAT_GHOST = ['无','被挑衅','结仇','被追杀'];
 const ANCHOR_STATES = ['完好','磨损','被夺','被毁'];
 const GENDERS = ['男','女','未知'];
+const ITEM_TYPES = ['普通','装备','消耗品','法器','特殊'];
+const ITEM_STATES = ['完好','磨损','被夺','被毁','已用'];
+const QUEST_TYPES = ['主线','支线','沙盒'];
+const QUEST_STATES = ['进行中','已完成','失败','待触发'];
 
 // 字段定义：type: text|textarea|number|range|bool|select|group|record|array
 const SCHEMA_DEF = {
@@ -284,6 +294,32 @@ const SCHEMA_DEF = {
     鬼市关系: { type: 'select', options: NETHER_REL },
     庇护: { type: 'text' },
     敌人: { type: 'text' },
+  }},
+  物品: { type: 'group', fields: {
+    __array: {
+      type: 'array',
+      itemFields: {
+        名称: { type: 'text' },
+        类型: { type: 'select', options: ITEM_TYPES },
+        描述: { type: 'textarea' },
+        用途: { type: 'textarea' },
+        状态: { type: 'select', options: ITEM_STATES },
+      },
+      defaultItem: { 名称: '', 类型: '普通', 描述: '', 用途: '', 状态: '完好' },
+    },
+  }},
+  任务: { type: 'group', fields: {
+    __array: {
+      type: 'array',
+      itemFields: {
+        名称: { type: 'text' },
+        类型: { type: 'select', options: QUEST_TYPES },
+        描述: { type: 'textarea' },
+        进度: { type: 'textarea' },
+        状态: { type: 'select', options: QUEST_STATES },
+      },
+      defaultItem: { 名称: '', 类型: '主线', 描述: '', 进度: '', 状态: '进行中' },
+    },
   }},
   威胁: { type: 'group', fields: {
     阳光暴露: { type: 'range', min: 0, max: 100 },
@@ -567,8 +603,10 @@ function updateStatLine() {
   const learned = countUnlocked('后天');
   const passive = countPassive();
   const known = (d.隐藏 && d.隐藏.已知 ? Object.keys(d.隐藏.已知.家族成员 || []).length : 0);
+  const items = (d.物品 || []).length;
+  const quests = (d.任务 || []).length;
   document.getElementById('statLine').innerHTML =
-    `怨气 <b>${d.鬼魂?.怨气 ?? 0}</b> · 记忆 <b>${d.鬼魂?.记忆 ?? 0}</b> · 已掌握 <b>${innate}先天/${learned}后天</b> · 被动 <b>${passive}</b> · 在场 <b>${roles}</b> · 已知家族 <b>${known}</b>`;
+    `怨气 <b>${d.鬼魂?.怨气 ?? 0}</b> · 记忆 <b>${d.鬼魂?.记忆 ?? 0}</b> · 已掌握 <b>${innate}先天/${learned}后天</b> · 被动 <b>${passive}</b> · 在场 <b>${roles}</b> · 物品 <b>${items}</b> · 任务 <b>${quests}</b> · 已知家族 <b>${known}</b>`;
 }
 
 // ════════════════════════════════════════════════════════════════

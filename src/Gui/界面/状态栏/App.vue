@@ -38,6 +38,8 @@
         <AbilitySection v-show="activeTab === 'ability'" />
         <ThreatSection v-show="activeTab === 'threat'" />
         <OnSiteSection v-show="activeTab === 'onsite'" />
+        <ItemsSection v-show="activeTab === 'items'" />
+        <QuestSection v-show="activeTab === 'quest'" />
       </div>
     </div>
   </div>
@@ -51,6 +53,8 @@ import VengeanceSection from './components/VengeanceSection.vue';
 import AbilitySection from './components/AbilitySection.vue';
 import ThreatSection from './components/ThreatSection.vue';
 import OnSiteSection from './components/OnSiteSection.vue';
+import ItemsSection from './components/ItemsSection.vue';
+import QuestSection from './components/QuestSection.vue';
 
 const store = useDataStore();
 
@@ -63,6 +67,8 @@ const tabs = [
   { key: 'ability', label: '修炼' },
   { key: 'threat', label: '威胁' },
   { key: 'onsite', label: '在场' },
+  { key: 'items', label: '物品' },
+  { key: 'quest', label: '任务' },
 ];
 
 const ghost = computed(() => store.data.鬼魂);

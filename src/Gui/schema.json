@@ -388,6 +388,22 @@
       },
       "description": "当前场景在场的角色清单，随剧情进出增删"
     },
+    "物品": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/__schema34"
+      },
+      "description": "随身物品/装备清单，随剧情获得、使用与消耗增删"
+    },
+    "任务": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/__schema35"
+      },
+      "description": "当前任务/目标清单，主线与支线并存；完成后更新状态"
+    },
     "威胁": {
       "default": {},
       "type": "object",
@@ -395,12 +411,12 @@
         "阳光暴露": {
           "default": 0,
           "description": "白天暴露在阳光下的危险度",
-          "$ref": "#/$defs/__schema34"
+          "$ref": "#/$defs/__schema36"
         },
         "阴差注意": {
           "default": 0,
           "description": "地府查访关注度，过高会被鬼差盯上",
-          "$ref": "#/$defs/__schema35"
+          "$ref": "#/$defs/__schema37"
         },
         "人间威胁": {
           "default": "无",
@@ -433,7 +449,7 @@
         "人性残余": {
           "default": 100,
           "description": "越来越不像人的程度；残余越低越接近恶鬼",
-          "$ref": "#/$defs/__schema36"
+          "$ref": "#/$defs/__schema38"
         },
         "记忆碎片": {
           "default": "待初始化",
@@ -452,10 +468,10 @@
           "default": {},
           "type": "object",
           "propertyNames": {
-            "$ref": "#/$defs/__schema37"
+            "$ref": "#/$defs/__schema39"
           },
           "additionalProperties": {
-            "$ref": "#/$defs/__schema38"
+            "$ref": "#/$defs/__schema40"
           },
           "description": "执念锚物：生前物件锚定记忆，触碰抗磨损（记忆扣减最多抵消一半）；被毁则对应记忆格不可逆融化"
         },
@@ -464,16 +480,16 @@
           "type": "object",
           "properties": {
             "家族成员": {
-              "$ref": "#/$defs/__schema39"
-            },
-            "屏障": {
               "$ref": "#/$defs/__schema41"
             },
+            "屏障": {
+              "$ref": "#/$defs/__schema43"
+            },
             "罪证": {
-              "$ref": "#/$defs/__schema42"
+              "$ref": "#/$defs/__schema44"
             },
             "捉鬼人": {
-              "$ref": "#/$defs/__schema43"
+              "$ref": "#/$defs/__schema45"
             }
           },
           "description": "状态栏信息迷雾：记录玩家已确认的信息，未确认的不在状态栏暴露"
@@ -757,18 +773,103 @@
       "description": "内衣内裤，如 素色贴身内衣"
     },
     "__schema34": {
-      "type": "number"
+      "type": "object",
+      "properties": {
+        "名称": {
+          "default": "",
+          "type": "string",
+          "description": "物品/装备名称，如 带血的旧钥匙串/摄魂铃/一叠冥钞"
+        },
+        "类型": {
+          "default": "普通",
+          "type": "string",
+          "enum": [
+            "普通",
+            "装备",
+            "消耗品",
+            "法器",
+            "特殊"
+          ],
+          "description": "物品类别"
+        },
+        "描述": {
+          "default": "",
+          "type": "string",
+          "description": "外观与当前状态"
+        },
+        "用途": {
+          "default": "",
+          "type": "string",
+          "description": "怎么用、用来干什么"
+        },
+        "状态": {
+          "default": "完好",
+          "type": "string",
+          "enum": [
+            "完好",
+            "磨损",
+            "被夺",
+            "被毁",
+            "已用"
+          ],
+          "description": "物品状态：完好→磨损→被夺/被毁/已用"
+        }
+      }
     },
     "__schema35": {
-      "type": "number"
+      "type": "object",
+      "properties": {
+        "名称": {
+          "default": "",
+          "type": "string",
+          "description": "任务/目标名称，如 查明被杀真相/潜入老宅密室"
+        },
+        "类型": {
+          "default": "主线",
+          "type": "string",
+          "enum": [
+            "主线",
+            "支线",
+            "沙盒"
+          ],
+          "description": "任务性质：主线=复仇主线，支线=各方委托"
+        },
+        "描述": {
+          "default": "",
+          "type": "string",
+          "description": "任务内容与要求"
+        },
+        "进度": {
+          "default": "",
+          "type": "string",
+          "description": "当前进展，如 线索：0/3，或 已潜入密室"
+        },
+        "状态": {
+          "default": "进行中",
+          "type": "string",
+          "enum": [
+            "进行中",
+            "已完成",
+            "失败",
+            "待触发"
+          ],
+          "description": "任务状态"
+        }
+      }
     },
     "__schema36": {
       "type": "number"
     },
     "__schema37": {
-      "type": "string"
+      "type": "number"
     },
     "__schema38": {
+      "type": "number"
+    },
+    "__schema39": {
+      "type": "string"
+    },
+    "__schema40": {
       "type": "object",
       "properties": {
         "锚定记忆": {
@@ -789,28 +890,28 @@
         }
       }
     },
-    "__schema39": {
+    "__schema41": {
       "default": [],
       "type": "array",
       "items": {
-        "$ref": "#/$defs/__schema40"
+        "$ref": "#/$defs/__schema42"
       },
       "description": "已确认身份的神宗家族成员（存身份，如 老板/老家主/堂兄），剧情中认出后加入；未确认的成员状态栏不显示"
     },
-    "__schema40": {
+    "__schema42": {
       "type": "string"
     },
-    "__schema41": {
+    "__schema43": {
       "default": false,
       "type": "boolean",
       "description": "是否已探明家族防护屏障（供奉道士/祖坟阵法/血脉气运）；未探明时状态栏显示？？？"
     },
-    "__schema42": {
+    "__schema44": {
       "default": false,
       "type": "boolean",
       "description": "是否已发现老宅密室罪证线索；未发现时状态栏显示？？？"
     },
-    "__schema43": {
+    "__schema45": {
       "default": false,
       "type": "boolean",
       "description": "是否察觉有捉鬼人盯上；未察觉时状态栏显示？"

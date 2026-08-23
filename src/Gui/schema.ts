@@ -104,6 +104,22 @@ export const Schema = z.object({
     状态: z.string().describe('在场状态，如 在场/刚离开/昏迷/死亡').prefault('在场'),
   })).describe('当前场景在场的角色清单，随剧情进出增删').prefault([]),
 
+  物品: z.array(z.object({
+    名称: z.string().describe('物品/装备名称，如 带血的旧钥匙串/摄魂铃/一叠冥钞').prefault(''),
+    类型: z.enum(['普通', '装备', '消耗品', '法器', '特殊']).describe('物品类别').prefault('普通'),
+    描述: z.string().describe('外观与当前状态').prefault(''),
+    用途: z.string().describe('怎么用、用来干什么').prefault(''),
+    状态: z.enum(['完好', '磨损', '被夺', '被毁', '已用']).describe('物品状态：完好→磨损→被夺/被毁/已用').prefault('完好'),
+  })).describe('随身物品/装备清单，随剧情获得、使用与消耗增删').prefault([]),
+
+  任务: z.array(z.object({
+    名称: z.string().describe('任务/目标名称，如 查明被杀真相/潜入老宅密室').prefault(''),
+    类型: z.enum(['主线', '支线', '沙盒']).describe('任务性质：主线=复仇主线，支线=各方委托').prefault('主线'),
+    描述: z.string().describe('任务内容与要求').prefault(''),
+    进度: z.string().describe('当前进展，如 线索：0/3，或 已潜入密室').prefault(''),
+    状态: z.enum(['进行中', '已完成', '失败', '待触发']).describe('任务状态').prefault('进行中'),
+  })).describe('当前任务/目标清单，主线与支线并存；完成后更新状态').prefault([]),
+
   威胁: z.object({
     阳光暴露: z.coerce.number().transform(v => _.clamp(v, 0, 100)).describe('白天暴露在阳光下的危险度').prefault(0),
     阴差注意: z.coerce.number().transform(v => _.clamp(v, 0, 100)).describe('地府查访关注度，过高会被鬼差盯上').prefault(0),
