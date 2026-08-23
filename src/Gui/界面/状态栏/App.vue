@@ -59,6 +59,17 @@ import QuestSection from './components/QuestSection.vue';
 const store = useDataStore();
 
 const open = useLocalStorage<boolean>('gui:statusbar:open', false);
+// 折叠时暂停轮询（省掉后台空转），展开时恢复并立即同步最新数据
+watch(open, (v) => {
+  if (v) {
+    store.resumePolling();
+  } else {
+    store.pausePolling();
+  }
+});
+if (!open.value) {
+  store.pausePolling();
+}
 // 选项卡：默认停在「状态」，本地记忆上次停留
 const activeTab = useLocalStorage<string>('gui:statusbar:tab', 'status');
 const tabs = [

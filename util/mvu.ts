@@ -4,7 +4,14 @@ export function defineMvuDataStore<T extends z.ZodObject>(
   schema: T,
   variable_option: VariableOption,
   additional_setup?: (data: Ref<z.infer<T>>) => void,
-): StoreDefinition<`mvu_data.${string}`, { data: Ref<z.infer<T>> }> {
+): StoreDefinition<
+  `mvu_data.${string}`,
+  {
+    data: Ref<z.infer<T>>;
+    pausePolling: () => void;
+    resumePolling: () => void;
+  }
+> {
   if (
     variable_option.type === 'message' &&
     (variable_option.message_id === undefined || variable_option.message_id === 'latest')
@@ -34,8 +41,17 @@ export function defineMvuDataStore<T extends z.ZodObject>(
         additional_setup(data);
       }
 
-      useIntervalFn(() => {
+      // ── 数据层与展示层解耦 ──────────────────────────────────────────────
+      // MVU 每次更新 stat_data 都会整体替换引用（MagVarUpdate 写回新对象），
+      // 因此「引用未变化 = 数据未变化」：直接跳过，避免每 2 秒全量 safeParse + 深度比较。
+      // 只有 AI 真正更新变量（引用变化）时才解析一次，展示层只读 data。
+      let lastRef: unknown = undefined;
+      const sync = () => {
         const stat_data = _.get(getVariables(variable_option), 'stat_data', {});
+        if (stat_data === lastRef) {
+          return;
+        }
+        lastRef = stat_data;
         const result = schema.safeParse(stat_data);
         if (result.error) {
           return;
@@ -48,7 +64,14 @@ export function defineMvuDataStore<T extends z.ZodObject>(
             updateVariablesWith(variables => _.set(variables, 'stat_data', result.data), variable_option);
           }
         }
-      }, 2000);
+      };
+
+      const { pause: pausePolling, resume: _resume } = useIntervalFn(sync, 2000, { immediate: true });
+      // 恢复轮询时立即同步一次（折叠期间可能错过多次更新，展开马上看到最新值）
+      const resumePolling = () => {
+        _resume();
+        sync();
+      };
 
       const { ignoreUpdates } = watchIgnorable(
         data,
@@ -67,7 +90,7 @@ export function defineMvuDataStore<T extends z.ZodObject>(
         { deep: true },
       );
 
-      return { data };
+      return { data, pausePolling, resumePolling };
     }),
   );
 }
