@@ -379,6 +379,34 @@ const rankLabel = computed(() => rankFull.value);
   }
 }
 
+/* 手机：7 个 tab 保持一行紧凑排布 */
+@media (max-width: 480px) {
+  .ghost-tabs {
+    gap: 4px;
+    margin-bottom: 6px;
+  }
+  .ghost-tab {
+    min-width: 44px;
+    padding: 3px 5px;
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    border-radius: 5px;
+  }
+}
+
+@media (max-width: 360px) {
+  .ghost-tabs {
+    gap: 3px;
+    margin-bottom: 5px;
+  }
+  .ghost-tab {
+    min-width: 38px;
+    padding: 2px 3px;
+    font-size: 0.66rem;
+    letter-spacing: 0.06em;
+  }
+}
+
 @keyframes ghostFloat {
   0%,
   100% {

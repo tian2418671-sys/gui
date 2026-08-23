@@ -243,6 +243,11 @@ body {
   font-size: 0.84rem;
   font-weight: bold;
   color: var(--c-flesh);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+  flex: 1;
 }
 
 .item-type {
@@ -641,6 +646,24 @@ body {
   .thr-bar {
     height: 5px;
   }
+  /* 物品/任务卡片：名称截断 + 紧凑 */
+  .item-head {
+    gap: 4px;
+  }
+  .item-name {
+    font-size: 0.78rem;
+  }
+  .item-type {
+    font-size: 0.56rem;
+    padding: 0 3px;
+  }
+  .item-state {
+    font-size: 0.56rem;
+  }
+  .cult-hint {
+    font-size: 0.66rem;
+    padding: 5px 7px;
+  }
 }
 
 /* 超窄屏（小屏手机） */
@@ -689,5 +712,16 @@ body {
   }
   .ghost-item-wide {
     padding-top: 3px;
+  }
+  .item-name {
+    font-size: 0.74rem;
+  }
+  .item-type,
+  .item-state {
+    font-size: 0.52rem;
+  }
+  .cult-hint {
+    font-size: 0.62rem;
+    padding: 4px 6px;
   }
 }
