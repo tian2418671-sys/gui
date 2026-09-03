@@ -35,6 +35,18 @@ jobs:
           version: 10
 
       - run: pnpm install && pnpm build
+
+      # 本仓库 dist/Gui 产物必须带 __webpack_require__ 补丁：
+      # webpack outputModule 产物缺该声明, iframe 里会 ReferenceError → CDN 状态栏空白
+      # （酒馆角色卡脚本经 jsdelivr 引用 dist/鬼/..., 状态栏界面引用 dist/Gui/...）
+      - name: Patch dist/Gui with __webpack_require__ stub
+        if: github.repository != 'StageDog/tavern_helper_template'
+        run: |
+          F="dist/Gui/界面/状态栏/index.html"
+          if [ -f "$F" ] && ! grep -q 'var __webpack_require__={}' "$F"; then
+            sed -i 's|<script type="module">|<script type="module">\\nvar __webpack_require__={};|' "$F"
+          fi
+
       - name: Only keep 角色卡示例 in dist for template upstream
         if: github.repository == 'StageDog/tavern_helper_template'
         run: |
@@ -52,12 +64,5 @@ jobs:
           default_author: github_actions
           message: '[bot] bundle'
 
-      # 自动打版本 tag, 从而让 jsdelivr 基于版本号在 12h 内更新缓存而不是用非版本号的 7d 缓存
-      - id: autotag
-        if: github.repository != 'StageDog/tavern_helper_template'
-        uses: phish108/autotag-action@v1.1.64
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          with-v: true
-      - if: ${{ github.repository != 'StageDog/tavern_helper_template' && steps.autotag.outputs.tag != '0.0.0' && steps.autotag.outputs.new-tag != steps.autotag.outputs.tag }}
-        run: git push --delete origin ${{ steps.autotag.outputs.tag }}
+      # 自动打 tag 已禁用: v0.0.x tag 会与卡版本号混淆且造成垃圾 tag 堆积
+      # 卡的 CDN 引用一律走 @main, 不依赖 tag
