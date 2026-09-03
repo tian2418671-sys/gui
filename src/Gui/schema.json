@@ -20,6 +20,95 @@
             }
           ]
         },
+        "数字日期": {
+          "default": "待初始化",
+          "anyOf": [
+            {
+              "type": "string",
+              "description": "公历数字日期，如 2024年3月21日·星期四；无明确日期可写 待初始化"
+            },
+            {
+              "type": "string",
+              "const": "待初始化"
+            }
+          ]
+        },
+        "季节": {
+          "default": "春",
+          "type": "string",
+          "enum": [
+            "春",
+            "夏",
+            "秋",
+            "冬"
+          ],
+          "description": "当前季节，按剧情时间推断（3-5月春/6-8月夏/9-11月秋/12-2月冬）"
+        },
+        "干支纪年": {
+          "default": "待初始化",
+          "anyOf": [
+            {
+              "type": "string",
+              "description": "天干地支纪年，如 甲辰年；未知则 待初始化"
+            },
+            {
+              "type": "string",
+              "const": "待初始化"
+            }
+          ]
+        },
+        "十二时辰": {
+          "default": "待初始化",
+          "anyOf": [
+            {
+              "type": "string",
+              "description": "天干地支时辰（十二时辰），如 辰时/丑时；非必要可写 待初始化"
+            },
+            {
+              "type": "string",
+              "const": "待初始化"
+            }
+          ]
+        },
+        "农历日期": {
+          "default": "待初始化",
+          "anyOf": [
+            {
+              "type": "string",
+              "description": "农历日期，如 三月初三；非农历剧情可写 无"
+            },
+            {
+              "type": "string",
+              "const": "待初始化"
+            }
+          ]
+        },
+        "节气": {
+          "default": "待初始化",
+          "anyOf": [
+            {
+              "type": "string",
+              "description": "当前二十四节气，如 惊蛰/清明/立冬；非节气期可写 无"
+            },
+            {
+              "type": "string",
+              "const": "待初始化"
+            }
+          ]
+        },
+        "节日": {
+          "default": "待初始化",
+          "anyOf": [
+            {
+              "type": "string",
+              "description": "当前/临近农历节日，如 春节/中元节/清明；平日写 无"
+            },
+            {
+              "type": "string",
+              "const": "待初始化"
+            }
+          ]
+        },
         "当前区域": {
           "default": "待初始化",
           "anyOf": [
@@ -44,27 +133,12 @@
           ],
           "description": "白天必须躲藏，夜晚才能行动"
         },
-        "当前幕": {
-          "default": "第一幕·觉醒",
-          "type": "string",
-          "enum": [
-            "第一幕·觉醒",
-            "第二幕·初次尝试",
-            "第三幕·人间的另一个窗口",
-            "第四幕·削弱家族屏障",
-            "第五幕·医院中的其他鬼",
-            "第六幕·灭族",
-            "第七幕·之后",
-            "沙盒模式·游历"
-          ],
-          "description": "当前主线幕，主线任务了结后（无论以何种方式了结）进入沙盒模式自由游历"
-        },
         "当前剧情阶段": {
           "default": "待初始化",
           "anyOf": [
             {
               "type": "string",
-              "description": "当前剧情进展描述"
+              "description": "当前状态：玩家此刻在哪、在干什么、发生了什么（自由描述，无剧情阶段概念）"
             },
             {
               "type": "string",
@@ -222,12 +296,12 @@
       "default": {},
       "type": "object",
       "properties": {
-        "当前目标": {
+        "车祸真相": {
           "default": "待初始化",
           "anyOf": [
             {
               "type": "string",
-              "description": "当前复仇目标"
+              "description": "暗线·车祸真相进度：玩家自己拼出多少算多少，不预设结论；未触及则保持迷雾"
             },
             {
               "type": "string",
@@ -399,7 +473,7 @@
       "items": {
         "$ref": "#/$defs/__schema36"
       },
-      "description": "当前任务/目标清单，主线与支线并存；完成后更新状态"
+      "description": "当前任务/目标清单，暗线/委托/遭遇并存；完成后更新状态"
     },
     "威胁": {
       "default": {},
@@ -474,6 +548,9 @@
             },
             "捉鬼人": {
               "$ref": "#/$defs/__schema46"
+            },
+            "势力": {
+              "$ref": "#/$defs/__schema47"
             }
           },
           "description": "状态栏信息迷雾：记录玩家已确认的信息，未确认的不在状态栏暴露"
@@ -809,14 +886,14 @@
           "description": "任务/目标名称，如 查明被杀真相/潜入老宅密室"
         },
         "类型": {
-          "default": "主线",
+          "default": "委托",
           "type": "string",
           "enum": [
-            "主线",
-            "支线",
-            "沙盒"
+            "真相",
+            "委托",
+            "遭遇"
           ],
-          "description": "任务性质：主线=复仇主线，支线=各方委托"
+          "description": "线索性质：真相=暗线相关，委托=各方请托，遭遇=临时事件；不预设任何线"
         },
         "描述": {
           "default": "",
@@ -899,6 +976,17 @@
       "default": false,
       "type": "boolean",
       "description": "是否察觉有捉鬼人盯上；未察觉时状态栏显示？"
+    },
+    "__schema47": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/__schema48"
+      },
+      "description": "已接触/确认的势力名单（神宗家/李家/鬼市/医院/胡同/阴司等），未接触的不显示"
+    },
+    "__schema48": {
+      "type": "string"
     }
   }
 }

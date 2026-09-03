@@ -69,12 +69,55 @@ body {
   word-break: break-all;
 }
 
+/* 迷雾字段的隐藏弱引导：只指调查方向，不给答案，已知后自动消失 */
+.fog-hint {
+  font-size: 0.72rem;
+  line-height: 1.5;
+  color: var(--c-mist);
+  opacity: 0.85;
+  padding: 0 0 3px 1em;
+}
+.fog-hint::before {
+  content: '⤷ ';
+  color: var(--c-water);
+}
+
 /* 跨整行的条目（如锚物列表） */
 .ghost-item-wide {
   grid-column: 1 / -1;
   margin-top: 2px;
   border-top: 1px dashed var(--c-line);
   padding-top: 4px;
+}
+
+/* 时间块（状态页内多行时间展示） */
+.time-block {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  line-height: 1.5;
+}
+.time-line {
+  display: block;
+}
+.time-line.t-main {
+  font-size: 0.88rem;
+  color: var(--c-phos);
+  letter-spacing: 0.04em;
+  font-weight: bold;
+}
+.time-line.t-sub {
+  font-size: 0.78rem;
+  color: var(--c-mist);
+}
+.time-line.t-festival {
+  font-size: 0.78rem;
+  color: var(--c-grime);
+  letter-spacing: 0.05em;
+}
+.t-season {
+  font-style: normal;
+  font-size: 0.85em;
 }
 
 /* 家族名单（墓碑牌） */

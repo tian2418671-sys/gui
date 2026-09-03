@@ -5,6 +5,7 @@
       <div class="thr-row"><span class="lbl">☀ 阳光暴露</span><span class="thr-bar" :title="sunHint"><i :style="{ width: sun + '%' }"></i></span><span class="thr-num">{{ sun }}%</span></div>
       <div class="thr-row"><span class="lbl">⚖ 阴差注意</span><span class="thr-bar" :title="grimHint"><i class="t-phos" :style="{ width: grim + '%' }"></i></span><span class="thr-num">{{ grim }}%</span></div>
       <div class="thr-row"><span class="lbl">🔪 人间威胁</span><span class="thr-flag" :title="humanHint">{{ humanThreat }}</span></div>
+      <div v-if="known['捉鬼人'] !== true" class="fog-hint">{{ humanFogHint }}</div>
       <div class="thr-row"><span class="lbl">👻 鬼界敌意</span><span class="thr-flag" :class="netherLevel" :title="netherHint">{{ netherThreat }}</span></div>
     </div>
   </div>
@@ -23,6 +24,10 @@ const grim = computed(() => Math.max(0, Math.min(100, Number(threat.value['阴�
 
 const sunHint = computed(() => `白天暴露在阳光下的危险度（当前 ${sun.value}%）；躲入阴影或入夜归零`);
 const grimHint = computed(() => `地府查访关注度（当前 ${grim.value}%）；过高会被鬼差盯上`);
+
+const known = computed(() => (hidden.value['已知'] || {}) as Record<string, unknown>);
+// 隐藏的弱引导：未察觉捉鬼人时给出方向提示（不剧透答案），察觉后自动消失
+const humanFogHint = '仇家不会坐视怪事不管——若有「高人」被请来，你会先嗅到不一样的气味';
 
 // 信息迷雾：未察觉人间威胁前显示「？」
 const humanThreat = computed(() => {

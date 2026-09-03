@@ -1,6 +1,6 @@
 <template>
   <div class="ghost-sec">
-    <div class="ghost-sec-head">任 务</div>
+    <div class="ghost-sec-head">线 索</div>
     <template v-if="quests.length">
       <div v-for="(q, i) in quests" :key="i" class="ghost-item ghost-item-wide" :class="{ done: q['状态'] === '已完成' }">
         <div class="item-head" style="cursor: pointer" @click="toggle(i)">
@@ -8,15 +8,15 @@
           <span class="item-name">{{ q['名称'] || '？？？' }}</span>
           <span v-if="q['类型']" class="item-type">{{ q['类型'] }}</span>
           <span class="item-state" :class="stateClass(q['状态'])">{{ q['状态'] || '进行中' }}</span>
-          <button v-if="q['类型'] !== '主线'" class="item-discard" title="放弃任务" @click.stop="remove(i)">✕</button>
+          <button v-if="q['类型'] !== '真相'" class="item-discard" title="放弃线索" @click.stop="remove(i)">✕</button>
         </div>
         <div v-if="isOpen(i)" class="item-detail">
-          <div v-if="q['描述']" class="outfit-row"><span class="outfit-lbl">目标</span><span class="outfit-val">{{ q['描述'] }}</span></div>
+          <div v-if="q['描述']" class="outfit-row"><span class="outfit-lbl">内容</span><span class="outfit-val">{{ q['描述'] }}</span></div>
           <div v-if="q['进度']" class="outfit-row"><span class="outfit-lbl">进度</span><span class="outfit-val">{{ q['进度'] }}</span></div>
         </div>
       </div>
     </template>
-    <span v-else class="lbl" style="color: var(--c-mist)">（暂无任务）</span>
+    <span v-else class="lbl" style="color: var(--c-mist)">（暂无线索——守灵的场面、旧居的物件、鬼市的门道，主动去碰才会浮出来）</span>
   </div>
 </template>
 
@@ -36,7 +36,7 @@ interface Quest {
 
 const quests = computed<Quest[]>(() => (store.data.任务 || []) as unknown as Quest[]);
 
-// 放弃任务：从「任务」数组移除（主线任务不显示按钮，不可放弃）；
+// 放弃线索：从「任务」数组移除（真相=暗线相关不可放弃）；
 // 修改 store.data 会经 watchIgnorable 自动写回酒馆变量
 function remove(i: number) {
   const list = store.data.任务 || [];

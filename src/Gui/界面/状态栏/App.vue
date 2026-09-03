@@ -4,10 +4,10 @@
       <span class="ghost-ic">◌</span>
       <span class="ghost-name">{{ displayName }}</span>
       <span v-if="rankLabel" class="ghost-rank" :title="rankFull">{{ rankLabel }}</span>
-      <span class="ghost-time" :title="currentTime">{{ timeIcon }}<template v-if="timeText"> {{ timeText }}</template></span>
+      <span class="ghost-time" :title="timeFull">{{ timeIcon }}<template v-if="timeText"> {{ timeText }}</template><template v-if="seasonText"> <i class="t-season">{{ seasonText }}</i></template></span>
       <span class="ghost-chev">▾</span>
       <span class="ghost-core">
-        <span class="ghost-gauge g-grime" :class="{ flash: grudgeFlash }" title="怨气：复仇与恨意化为的力量，越强解锁越多先天能力，也越侵蚀记忆">
+        <span class="ghost-gauge g-grime" :class="{ flash: grudgeFlash }" title="怨气：执念与恨意化为的力量，越强解锁越多先天能力，也越侵蚀记忆">
           <span class="g-label">怨气</span>
           <span class="g-track"><i :style="{ width: grudge + '%' }"></i></span>
           <span class="g-val">{{ grudge }}%</span>
@@ -34,12 +34,12 @@
       </div>
       <div class="ghost-tabpanes">
         <StatusSection v-show="activeTab === 'status'" />
-        <VengeanceSection v-show="activeTab === 'vengeance'" />
+        <TruthSection v-show="activeTab === 'truth'" />
         <AbilitySection v-show="activeTab === 'ability'" />
         <ThreatSection v-show="activeTab === 'threat'" />
         <OnSiteSection v-show="activeTab === 'onsite'" />
         <ItemsSection v-show="activeTab === 'items'" />
-        <QuestSection v-show="activeTab === 'quest'" />
+        <ClueSection v-show="activeTab === 'clue'" />
       </div>
     </div>
   </div>
@@ -49,12 +49,12 @@
 import { computed, ref, watch } from 'vue';
 import { useDataStore } from './store';
 import StatusSection from './components/StatusSection.vue';
-import VengeanceSection from './components/VengeanceSection.vue';
+import TruthSection from './components/TruthSection.vue';
 import AbilitySection from './components/AbilitySection.vue';
 import ThreatSection from './components/ThreatSection.vue';
 import OnSiteSection from './components/OnSiteSection.vue';
 import ItemsSection from './components/ItemsSection.vue';
-import QuestSection from './components/QuestSection.vue';
+import ClueSection from './components/ClueSection.vue';
 
 const store = useDataStore();
 
@@ -74,12 +74,12 @@ if (!open.value) {
 const activeTab = useLocalStorage<string>('gui:statusbar:tab', 'status');
 const tabs = [
   { key: 'status', label: '状态' },
-  { key: 'vengeance', label: '复仇' },
+  { key: 'truth', label: '真相' },
   { key: 'ability', label: '修炼' },
   { key: 'threat', label: '威胁' },
   { key: 'onsite', label: '在场' },
   { key: 'items', label: '物品' },
-  { key: 'quest', label: '任务' },
+  { key: 'clue', label: '线索' },
 ];
 
 const ghost = computed(() => store.data.鬼魂);
@@ -148,6 +148,38 @@ const timeText = computed(() => {
   if (!t || t === '待初始化') return '';
   // 去掉开头的年份，保留「M月·时段」，避免标题栏过长
   return t.replace(/^\d{4}年/, '');
+});
+
+// 季节图标（标题栏紧凑版）：🌸春 ☀夏 🍂秋 ❄冬
+const seasonIconMap: Record<string, string> = { 春: '🌸', 夏: '☀', 秋: '🍂', 冬: '❄' };
+const seasonText = computed(() => {
+  const s = world.value['季节'] || '';
+  const icon = seasonIconMap[s];
+  return icon || '';
+});
+
+// 悬停完整时间：干支纪年 + 季节 + 十二时辰 + 当前时间 + 农历/节气 + 数字日期 + 节日
+const timeFull = computed(() => {
+  const parts: string[] = [];
+  const ganzhi = world.value['干支纪年'] || '';
+  if (ganzhi && ganzhi !== '待初始化') parts.push(ganzhi);
+  const season = world.value['季节'] || '';
+  if (season) parts.push(`${season}季`);
+  const shichen = world.value['十二时辰'] || '';
+  if (shichen && shichen !== '待初始化') parts.push(shichen);
+  if (currentTime.value && currentTime.value !== '待初始化') parts.push(currentTime.value);
+  const lunar = world.value['农历日期'] || '';
+  const jieqi = world.value['节气'] || '';
+  const lunarParts = [
+    lunar && lunar !== '待初始化' && lunar !== '无' ? lunar : '',
+    jieqi && jieqi !== '待初始化' && jieqi !== '无' ? jieqi : '',
+  ].filter(Boolean);
+  if (lunarParts.length) parts.push(lunarParts.join('·'));
+  const digital = world.value['数字日期'] || '';
+  if (digital && digital !== '待初始化') parts.push(digital);
+  const festival = world.value['节日'] || '';
+  if (festival && festival !== '待初始化' && festival !== '无') parts.push(festival);
+  return parts.join('｜') || '时间';
 });
 
 const daylight = computed(() => world.value['时辰'] === '白天');
