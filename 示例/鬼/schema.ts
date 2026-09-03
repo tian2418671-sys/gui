@@ -4,14 +4,16 @@
 export const Schema = z.object({
   世界: z.object({
     当前时间: z.string().describe('当前剧情时间，如 2024年3月·深夜').or(z.literal('待初始化')).prefault('待初始化'),
+    数字日期: z.string().describe('公历数字日期，如 2024年3月21日·星期四；无明确日期可写 待初始化').or(z.literal('待初始化')).prefault('待初始化'),
+    季节: z.enum(['春', '夏', '秋', '冬']).describe('当前季节，按剧情时间推断（3-5月春/6-8月夏/9-11月秋/12-2月冬）').prefault('春'),
+    干支纪年: z.string().describe('天干地支纪年，如 甲辰年；未知则 待初始化').or(z.literal('待初始化')).prefault('待初始化'),
+    十二时辰: z.string().describe('天干地支时辰（十二时辰），如 辰时/丑时；非必要可写 待初始化').or(z.literal('待初始化')).prefault('待初始化'),
+    农历日期: z.string().describe('农历日期，如 三月初三；非农历剧情可写 无').or(z.literal('待初始化')).prefault('待初始化'),
+    节气: z.string().describe('当前二十四节气，如 惊蛰/清明/立冬；非节气期可写 无').or(z.literal('待初始化')).prefault('待初始化'),
+    节日: z.string().describe('当前/临近农历节日，如 春节/中元节/清明；平日写 无').or(z.literal('待初始化')).prefault('待初始化'),
     当前区域: z.string().describe('当前所在地：出事路口/医院停尸房/普通小区的家/家族老宅/家族私立医院/鬼市/废弃防空地道/高架桥下/城中别墅/十字路口/城中村/土地龛等').or(z.literal('待初始化')).prefault('待初始化'),
     时辰: z.enum(['白天', '黄昏', '夜晚', '凌晨']).describe('白天必须躲藏，夜晚才能行动').prefault('夜晚'),
-    当前幕: z.enum([
-      '第一幕·觉醒', '第二幕·初次尝试', '第三幕·人间的另一个窗口',
-      '第四幕·削弱家族屏障', '第五幕·医院中的其他鬼', '第六幕·灭族', '第七幕·之后',
-      '沙盒模式·游历'
-    ]).describe('当前主线幕，主线任务了结后（无论以何种方式了结）进入沙盒模式自由游历').prefault('第一幕·觉醒'),
-    当前剧情阶段: z.string().describe('当前剧情进展描述').or(z.literal('待初始化')).prefault('待初始化'),
+    当前剧情阶段: z.string().describe('当前状态：玩家此刻在哪、在干什么、发生了什么（自由描述，无剧情阶段概念）').or(z.literal('待初始化')).prefault('待初始化'),
     自动生成角色: z.enum(['开启', '关闭']).describe('实验功能开关：AI 生成新角色时是否套用「角色生成算法」预设模板，关闭则回到基础规则').prefault('开启'),
   }).prefault({}),
 
@@ -62,7 +64,7 @@ export const Schema = z.object({
   }).describe('能力分三类：先天为鬼天生主动基础能力（需摸索掌握）、后天为修炼所学主动法门（动态习得）、被动为修为自然形成的现象（非能力，仅是否获得）').prefault({}),
 
   复仇: z.object({
-    当前目标: z.string().describe('当前复仇目标').or(z.literal('待初始化')).prefault('待初始化'),
+    车祸真相: z.string().describe('暗线·车祸真相进度：玩家自己拼出多少算多少，不预设结论；未触及则保持迷雾').or(z.literal('待初始化')).prefault('待初始化'),
     家族成员: z.record(z.string(), z.object({
       身份: z.string().describe('如 老家主/老板/堂兄/旁系').prefault(''),
       状态: z.string().describe('心理状态逐级下坠：活着→疑神疑鬼→神经衰弱→濒临失控→疯狂→死亡，不得越级').prefault('活着'),
@@ -116,11 +118,11 @@ export const Schema = z.object({
 
   任务: z.array(z.object({
     名称: z.string().describe('任务/目标名称，如 查明被杀真相/潜入老宅密室').prefault(''),
-    类型: z.enum(['主线', '支线', '沙盒']).describe('任务性质：主线=复仇主线，支线=各方委托').prefault('主线'),
+    类型: z.enum(['真相', '委托', '遭遇']).describe('线索性质：真相=暗线相关，委托=各方请托，遭遇=临时事件；不预设任何线').prefault('委托'),
     描述: z.string().describe('任务内容与要求').prefault(''),
     进度: z.string().describe('当前进展，如 线索：0/3，或 已潜入密室').prefault(''),
     状态: z.enum(['进行中', '已完成', '失败', '待触发']).describe('任务状态').prefault('进行中'),
-  })).describe('当前任务/目标清单，主线与支线并存；完成后更新状态').prefault([]),
+  })).describe('当前任务/目标清单，暗线/委托/遭遇并存；完成后更新状态').prefault([]),
 
   威胁: z.object({
     阳光暴露: z.coerce.number().transform(v => _.clamp(v, 0, 100)).describe('白天暴露在阳光下的危险度').prefault(0),
@@ -140,6 +142,7 @@ export const Schema = z.object({
       屏障: z.boolean().describe('是否已探明家族防护屏障（供奉道士/祖坟阵法/血脉气运）；未探明时状态栏显示？？？').prefault(false),
       罪证: z.boolean().describe('是否已发现老宅密室罪证线索；未发现时状态栏显示？？？').prefault(false),
       捉鬼人: z.boolean().describe('是否察觉有捉鬼人盯上；未察觉时状态栏显示？').prefault(false),
+      势力: z.array(z.string()).describe('已接触/确认的势力名单（神宗家/李家/鬼市/医院/胡同/阴司等），未接触的不显示').prefault([]),
     }).describe('状态栏信息迷雾：记录玩家已确认的信息，未确认的不在状态栏暴露').prefault({}),
   }).prefault({}),
 }).prefault({});
