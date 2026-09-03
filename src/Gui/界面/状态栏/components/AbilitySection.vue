@@ -10,7 +10,7 @@
     <div class="cult-progress" :title="promoteHint">
       <i :style="{ width: minDim + '%' }"></i>
     </div>
-    <div class="cult-progress-note">四维齐满 100 + 门槛达成 · 方可晋升</div>
+    <div class="cult-progress-note">死相与煞气 · 两者齐满 100 方可晋升</div>
 
     <!-- 鬼气：当前境界 + 折叠展开的解释说明 -->
     <div class="cult-dim">
@@ -23,11 +23,11 @@
         <div class="cult-hint-line"><b>是什么</b>：鬼魂自身凝练的阴属能量，是能力、阶位与被动现象的根源；越厚越纯，魂体越凝实、干涉阳间越强。</div>
         <div class="cult-hint-line"><b>怎么来</b>：怨气（复仇恨意）、香火与饭气、吞噬残魂、占地聚阴、惊煞采气（活人恐惧）。</div>
         <div class="cult-hint-line"><b>当前境界</b>：{{ rank }} · {{ qiState }}——{{ qiDesc }}</div>
-        <div class="cult-hint-line"><b>怎么升</b>：四维齐满 100 并达成对应门槛晋升下一阶，鬼气随之由「稀薄散乱 → 凝实如衣 → 外放成势 → 返璞归真」演进。</div>
+        <div class="cult-hint-line"><b>怎么升</b>：死相与煞气齐满 100 晋升下一阶，鬼气随之由「稀薄散乱 → 凝实如衣 → 外放成势 → 返璞归真」演进。</div>
       </div>
     </div>
 
-    <!-- 修炼四维：死相/煞气/锚点/法域，与「鬼的能力·鬼阶晋升体系」一致（四维同步成长，缺一不可），各自带「如何获得」折叠说明 -->
+    <!-- 修炼两维：死相（魂质凝实/死相炼化）+ 煞气（情绪驱动/能量摄取），各自带「如何获得」折叠说明 -->
     <div v-for="d in dimensions" :key="d.name" class="cult-dim">
       <div class="cult-dim-head" style="cursor: pointer" @click="toggleDim(d.name)">
         <span class="cult-dim-name">{{ d.name }}</span>
@@ -118,12 +118,10 @@ const nextRank = computed(() => {
   return `→ ${RANKS[idx + 1]}`;
 });
 
-// 修炼四维：与「鬼的能力·鬼阶晋升体系」四维一致（魂质与死相/因果与煞气/锚点与灵智/法域与威慑），四维同步成长、缺一不可
+// 修炼两维：死相（魂质与死相）+ 煞气（因果与煞气）；锚点与灵智、法域与威慑不再在状态栏展示
 const DIMS: { name: string; key: string; hint: string; how: string }[] = [
   { name: '死相', key: '魂质与死相', hint: '自身质量的凝实程度，对死亡本相的掌握与炼化', how: '吞噬残魂、炼化死相、魂体凝实时提升' },
   { name: '煞气', key: '因果与煞气', hint: '情绪驱动力与外部能量（饭气/香火/残魂/生煞）的摄取转化', how: '怨气增长、吸食香火饭气、提炼生煞时提升' },
-  { name: '锚点', key: '锚点与灵智', hint: '对抗失真与遗忘的自保机制，靠执念锚点稳住自我认知', how: '接触执念物、固魂稳记忆、灵智保全时提升' },
-  { name: '法域', key: '法域与威慑', hint: '对所在环境与阴阳秩序的影响力，从临时容身到改变一方生态', how: '长期驻留一域、影响环境、建立鬼界威名时提升' },
 ];
 
 // 鬼气境界：按当前阶位映射（与「鬼气与修炼阶级」条目的演进一致）
@@ -164,14 +162,14 @@ const dimensions = computed(() => {
   }));
 });
 
-// 晋升进度：以最低维度为准（缺一不可）
+// 晋升进度：以最低维度为准（两维缺一不可）
 const minDim = computed(() => {
   const vals = dimensions.value.map((d) => d.value);
   return vals.length ? Math.min(...vals) : 0;
 });
 const promoteHint = computed(() => {
   const weakest = dimensions.value.reduce((a, b) => (a.value <= b.value ? a : b));
-  return `晋升需四维齐满 100（缺一不可），当前最低「${weakest.name}」${weakest.value}%`;
+  return `晋升需死相与煞气齐满 100，当前最低「${weakest.name}」${weakest.value}%`;
 });
 
 // 能力清单：先天（鬼天生会的基础主动能力）+ 后天（修炼所学主动法门），完全动态读取变量「能力」record 的 key
